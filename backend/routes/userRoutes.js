@@ -1,10 +1,10 @@
 const express = require("express");
-const { adminOnly, protect } = require("../middlewares/authMiddleware"); // Fixed path
+const { adminOnly, protect } = require("../middlewears/authMiddlewears"); // Fixed path
 const {
     getUsers,
     getUserById,
     deleteUser
-} = require("../controllers/userController"); // Added controller imports
+} = require("../controllers/userControllers"); // Added controller imports
 
 const router = express.Router();
 
