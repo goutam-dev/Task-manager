@@ -279,7 +279,7 @@ const getDashboardData = async (req, res) => {
         const completedTasks = await Task.countDocuments({
             status: "Completed" 
         });
-        const overflowTasks = await Task.countDocuments({
+        const overdueTasks = await Task.countDocuments({
             status: { $ne: "Completed" },  // Fixed: changed $net to $ne
             dueDate: { $lt: new Date() },
         });
@@ -289,7 +289,7 @@ const getDashboardData = async (req, res) => {
         const taskDistributionRaw = await Task.aggregate([
     {
         $group: {
-            _id: "status",
+            _id: "$status",
             count: { $sum: 1 },
         },
     }
@@ -297,7 +297,7 @@ const getDashboardData = async (req, res) => {
 const taskDistribution = taskStatuses.reduce((acc, status) => {
     const formattedKey = status.replace(/\s+/g , "")
     acc[formattedKey] =
-    taskDistributionRaw.find((item) => item_id === status)?.count || 0;
+    taskDistributionRaw.find((item) => item._id === status)?.count || 0;
     return acc;
 },
 {});
