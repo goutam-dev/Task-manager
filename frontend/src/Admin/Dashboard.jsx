@@ -37,7 +37,7 @@ function Dashboard() {
 
   return (
     <>
-      <DashboardLayout menuItems={SIDEBAR_ITEMS} defaultActiveKey="dashboard">
+      <DashboardLayout defaultActiveKey="dashboard">
         <Space
           direction="vertical"
           size="large" 

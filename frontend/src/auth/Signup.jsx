@@ -175,9 +175,6 @@ export default function SignUp() {
           <Form.Item
             name="adminToken"
             label="Admin Token"
-            rules={[
-              { required: true, message: "Please enter your Admin Token!" },
-            ]}
           >
             <Input prefix={<KeyOutlined />} placeholder="Enter Admin Token" />
           </Form.Item>

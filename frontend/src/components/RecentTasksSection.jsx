@@ -11,8 +11,8 @@ export default function RecentTasksSection({ dashboardData }) {
   const columns = [
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "title",
+      key: "title",
       render: (text) => <Text strong>{text}</Text>,
     },
     {

@@ -2,13 +2,13 @@ import { useState, useEffect, useContext } from "react";
 import { Layout, Menu, Grid, Avatar, Typography, Badge } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { SIDEBAR_ITEMS as menuItems } from "../utils/data";
 
 const { Sider, Content, Footer } = Layout;
 const { useBreakpoint } = Grid;
 const { Text } = Typography;
 
 export default function DashboardLayout({
-  menuItems = [],
   defaultActiveKey = menuItems[0]?.key,
   children,
 }) {
@@ -16,7 +16,7 @@ export default function DashboardLayout({
   const [selectedKey, setSelectedKey] = useState(defaultActiveKey);
   const screens = useBreakpoint();
   const navigate = useNavigate();
-  const { user,clearUser } = useContext(UserContext);
+  const { user, clearUser } = useContext(UserContext);
 
   const isMobile = !screens.md;
   useEffect(() => {
@@ -28,10 +28,9 @@ export default function DashboardLayout({
     const item = menuItems.find((i) => i.key === key);
     if (item) {
       if (item.isLogout) {
-        
-      localStorage.clear();
-      clearUser();
-      navigate("/login");
+        localStorage.clear();
+        clearUser();
+        navigate("/login");
       } else {
         navigate(item.path);
       }
@@ -56,14 +55,19 @@ export default function DashboardLayout({
           <Avatar size={48} src={user.profileImageUrl} />
           {!collapsed && (
             <div style={{ marginTop: 8 }}>
-              <Text strong style={{ fontSize: 16,color: "#fff"}}>{user.name}</Text>
+              <Text strong style={{ fontSize: 16, color: "#fff" }}>
+                {user.name}
+              </Text>
               <br />
               <Text type="secondary" style={{ fontSize: 12, color: "#fff" }}>
                 {user.email}
               </Text>
               {user.role === "admin" && (
                 <div style={{ marginTop: 6 }}>
-                  <Badge count="Admin" style={{ backgroundColor: "rgb(26 135 196)" }} />
+                  <Badge
+                    count="Admin"
+                    style={{ backgroundColor: "rgb(26 135 196)" }}
+                  />
                 </div>
               )}
             </div>
@@ -77,13 +81,21 @@ export default function DashboardLayout({
           items={items}
         />
       </Sider>
-      <Layout>
-        <Content style={{ margin: "16px"  }}>
-          {children }
+
+      <Layout
+        style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+      >
+        {/* Scrollable content region */}
+        <Content
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "16px",
+            background: "#fff",
+          }}
+        >
+          {children}
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          ©2025 Created By Goutam
-        </Footer>
       </Layout>
     </Layout>
   );
