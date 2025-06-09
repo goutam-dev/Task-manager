@@ -9,7 +9,11 @@ export const API_PATHS = {
     },
     TASKS:{
         GET_DASHBOARD_DATA: `/api/tasks/dashboard-data`,
-        CREATE_TASK: "/api/tasks"
+        CREATE_TASK: "/api/tasks",
+        GET_ALL_TASKS: "/api/tasks",
+        GET_TASK_BY_ID: "/api/tasks/",
+        UPDATE_TASK: "/api/tasks/",
+        DELETE_TASK: "/api/tasks/",
     },
     USERS: {
         GET_ALL_USERS: "/api/users",

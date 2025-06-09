@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Layout,
   Card,
@@ -9,23 +9,31 @@ import {
   Button,
   Typography,
   message,
+  Modal,
+  Space,
 } from "antd";
+import { DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import AssignedUsersDisplay from "./AssignedUserDisplay";
 import UserSelectionModal from "./UserSelectionModal";
 import DynamicList from "./DynamicList";
 import Loading from "./Loading";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 const { Content } = Layout;
 const { Title } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
+const { confirm } = Modal;
 
 const TaskForm = () => {
   const location = useLocation();
-  const taskId = location.state || {};
+  let taskID = location.state?.taskID;
+  const isUpdate = typeof taskID === "string";
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -35,6 +43,7 @@ const TaskForm = () => {
   const [attachments, setAttachments] = useState([]);
   const [checklist, setChecklist] = useState([]);
   const [checklistTouched, setChecklistTouched] = useState(false);
+  const [prevChecklist, setPrevChecklist] = useState([]);
 
   const init = {
     priority: "Low",
@@ -56,13 +65,12 @@ const TaskForm = () => {
     setAssignedTouched(true);
     setChecklistTouched(true);
 
-    // if no users selected, don’t submit—will trigger the error help text
     if (selectedUsers.length === 0 || checklist.length === 0) {
       return;
     }
 
-    if (taskId) {
-      // updateTask()
+    if (isUpdate) {
+      updateTask(values);
       return;
     }
 
@@ -92,7 +100,112 @@ const TaskForm = () => {
       clearData();
     } catch (error) {
       console.error("Error creating task:", error);
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const getTaskDetailsById = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(
+        API_PATHS.TASKS.GET_TASK_BY_ID + taskID
+      );
+
+      if (response.data) {
+        console.log(response.data.assignedTo);
+
+        const taskInfo = response.data;
+        form.setFieldsValue({
+          title: taskInfo.title,
+          description: taskInfo.description,
+          priority: taskInfo.priority,
+          dueDate: taskInfo.dueDate ? dayjs(taskInfo.dueDate) : null,
+        });
+
+        setSelectedUsers(taskInfo?.assignedTo || []);
+        setAttachments(taskInfo?.attachments || []);
+        setChecklist(taskInfo?.todoChecklist?.map((item) => item?.text) || []);
+        setPrevChecklist(
+          taskInfo?.todoChecklist?.map((item) => item?.text) || []
+        );
+      } else {
+        console.log("Task not found");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [form, taskID]);
+
+  const updateTask = async (values) => {
+    setLoading(true);
+    try {
+      const todolist = checklist?.map((item) => {
+        const prevTodoChecklist = prevChecklist || [];
+        const matchedTask = prevTodoChecklist.find((task) => task.text == item);
+
+        return {
+          text: item,
+          completed: matchedTask ? matchedTask.completed : false,
+        };
+      });
+
+      const assignedTo = selectedUsers.map((u) => u._id);
+
+      const response = await axiosInstance.put(
+        API_PATHS.TASKS.UPDATE_TASK + taskID,
+        {
+          ...values,
+          dueDate: new Date(values.dueDate).toISOString(),
+          todoChecklist: todolist,
+          assignedTo,
+          attachments,
+        }
+      );
+      console.log(response);
+      message.success("Task Updated Successfully");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteTask = () => {
+    confirm({
+      title: "Delete Task",
+      icon: <ExclamationCircleOutlined />,
+      content:
+        "Are you sure you want to delete this task? This action cannot be undone.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk() {
+        // Call your delete method here
+        deleteTask();
+      },
+      onCancel() {
+        console.log("Delete cancelled");
+      },
+    });
+  };
+
+  const deleteTask = async () => {
+    console.log("Delete task method called for taskID:", taskID);
+
+    setLoading(true);
+    try {
+      const response = await axiosInstance.delete(
+        API_PATHS.TASKS.DELETE_TASK + taskID
+      );
+      message.success("Task Deleted Successfully");
+      console.log(response);
+      navigate("/admin/tasks");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      message.error("Failed to delete task");
     } finally {
       setLoading(false);
     }
@@ -103,6 +216,12 @@ const TaskForm = () => {
     setModalVisible(false);
     setAssignedTouched(true);
   };
+
+  useEffect(() => {
+    if (isUpdate) {
+      getTaskDetailsById();
+    }
+  }, [isUpdate, getTaskDetailsById]);
 
   if (loading) {
     return <Loading />;
@@ -119,7 +238,34 @@ const TaskForm = () => {
             padding: "24px",
           }}
         >
-          <Title level={3}>{taskId ? "Update Task" : "Create Task"}</Title>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 24,
+            }}
+          >
+            <Title level={3} style={{ margin: 0 }}>
+              {isUpdate ? "Update Task" : "Create Task"}
+            </Title>
+            {isUpdate && (
+              <Button
+                type="text"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={handleDeleteTask}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px 8px",
+                }}
+              >
+                Delete Task
+              </Button>
+            )}
+          </div>
 
           <Form
             form={form}
@@ -132,7 +278,7 @@ const TaskForm = () => {
               handleSubmit(values);
             }}
             onFinishFailed={() => {
-              // mark Assigned as “touched” whenever any validation fails
+              // mark Assigned as "touched" whenever any validation fails
               setAssignedTouched(true);
               setChecklistTouched(true);
             }}
@@ -225,10 +371,13 @@ const TaskForm = () => {
                 placeholder="Add file link (e.g. https://react.dev)"
               />
             </Form.Item>
+
             <Form.Item style={{ marginTop: 24 }}>
-              <Button type="primary" htmlType="submit" block>
-                {taskId ? "Update Task" : "Create Task"}
-              </Button>
+              <Space style={{ width: "100%" }}>
+                <Button type="primary" htmlType="submit" style={{ flex: 1 }}>
+                  {isUpdate ? "Update Task" : "Create Task"}
+                </Button>
+              </Space>
             </Form.Item>
           </Form>
         </Card>

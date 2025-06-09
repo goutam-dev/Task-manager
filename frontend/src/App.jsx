@@ -8,6 +8,7 @@ import UserProvider from "./context/userProvider";
 import { UserContext } from "./context/UserContext";
 import { useContext } from "react";
 import CreateTask from "./Admin/CreateTask";
+import ManageTask from "./Admin/ManageTask";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/create-task" element={<CreateTask />} />
+            <Route path="/admin/tasks" element={<ManageTask />} />
           </Route>
           
           <Route element={<PrivateRoute allowedRoles={["member"]} />}>

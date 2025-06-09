@@ -84,7 +84,7 @@ res.json({
 const getTaskById = async (req, res) => {
     try {
         const task = await Task.findById(req.params.id)
-            .populate('assignedTo', 'name email');
+            .populate('assignedTo', 'name email profileImageUrl');
         
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
@@ -163,7 +163,7 @@ const updateTask = async (req, res) => {
     res.json({ 
         success: true,
         message: "Task updated successfully", 
-        task: populatedTask 
+        task: updatedTask 
     });
     } catch (error) {
         res.status(500).json({

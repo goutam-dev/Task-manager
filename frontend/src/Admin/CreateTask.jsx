@@ -1,10 +1,10 @@
 import DashboardLayout from "../components/DashboardLayout";
 import TaskForm from "../components/TaskForm";
 
-function CreateTask() {
+function CreateTask({ taskID }) {
   return (
     <DashboardLayout defaultActiveKey="create-task">
-      <TaskForm />
+      <TaskForm taskID={taskID} />
     </DashboardLayout>
   );
 }

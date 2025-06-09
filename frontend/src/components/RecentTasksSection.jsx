@@ -1,4 +1,3 @@
-import React from "react";
 import { Row, Col, Typography, Button, Table, Tag, Card } from "antd";
 import { useNavigate } from "react-router-dom";
 
@@ -6,7 +5,7 @@ const { Title, Text } = Typography;
 
 export default function RecentTasksSection({ dashboardData }) {
   const navigate = useNavigate();
-  const data = dashboardData?.recentTasks || [];
+  const data = dashboardData?.recentTasks?.slice(0, 5) || [];
 
   const columns = [
     {
@@ -75,7 +74,7 @@ export default function RecentTasksSection({ dashboardData }) {
       <Table
         columns={columns}
         dataSource={data}
-        rowKey={(record) => record.id || record.name}
+        rowKey={(record) => record._id || record.name}
         pagination={false}
         size="middle"
         rowClassName={(record, index) =>

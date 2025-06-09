@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Pie, Column } from '@ant-design/plots';
 import { Row, Col, Card, Empty } from 'antd';
 
-
-
 const TaskCharts = ({ data }) => {
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
@@ -29,47 +27,52 @@ const TaskCharts = ({ data }) => {
 
   const hasPieData = pieChartData.some(item => item.value > 0);
   const hasBarData = barChartData.some(item => item.count > 0);
-  
 
-const pieConfig = {
-  interactions: [{ type: 'element-active' }],
-  data: pieChartData,
-  angleField: 'value',
-  colorField: 'type',
-  innerRadius: 0.8,
-  height: chartHeight,
-  label: {
-    text: 'value',
-    style: {
-      fontWeight: 'bold',
-    },
-  },
-  legend: {
-    color: {
-      position: 'right',
-      rowPadding: 5,
-    },
-  },
-  tooltip: {
-    items: [
-      {
-        field: 'type',
-        name: 'Category',
+  const pieConfig = {
+    interactions: [{ type: 'element-active' }],
+    data: pieChartData,
+    angleField: 'value',
+    colorField: 'type',
+    innerRadius: 0.8,
+    height: chartHeight,
+    label: {
+      text: 'value',
+      style: {
+        fontWeight: 'bold',
       },
-      {
-        field: 'value',
-        name: 'Value',
+    },
+    legend: {
+      color: {
+        position: 'right',
+        rowPadding: 5,
       },
-    ],
-  },
-};
+    },
+    tooltip: {
+      items: [
+        {
+          field: 'type',
+          name: 'Category',
+        },
+        {
+          field: 'value',
+          name: 'Value',
+        },
+      ],
+    },
+  };
 
   const barConfig = {
     data: barChartData,
     xField: 'priority',
     yField: 'count',
     height: chartHeight,
-    label: { position: 'middle', style: { fill: '#FFFFFF', opacity: 0.6 } },
+    label: { 
+      position: 'top', // Changed from 'middle' to 'top'
+      style: { 
+        fill: '#000000', // Changed to black for better visibility
+        opacity: 0.8 
+      } 
+    },
     interactions: [{ type: 'active-region' }],
   };
 
