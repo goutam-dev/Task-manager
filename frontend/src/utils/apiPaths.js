@@ -17,5 +17,9 @@ export const API_PATHS = {
     },
     USERS: {
         GET_ALL_USERS: "/api/users",
+    },
+    REPORTS: {
+        EXPORT_TASKS: "/api/reports/export/tasks",
+        EXPORT_USERS: "/api/reports/export/users"
     }
 }

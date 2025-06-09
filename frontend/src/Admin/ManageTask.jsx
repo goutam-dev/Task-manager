@@ -15,6 +15,7 @@ import {
   Space,
   Tooltip,
   Typography,
+  message,
 } from "antd";
 import {
   DownloadOutlined,
@@ -68,38 +69,26 @@ const ManageTask = () => {
     });
   };
 
-  const handleDownload = () => {
-    const headers = [
-      "Title",
-      "Description",
-      "Priority",
-      "Status",
-      "Start Date",
-      "Due Date",
-      "Progress",
-    ];
-    const rows = allTasks.map((t) => [
-      t.title,
-      t.description,
-      t.priority,
-      t.status,
-      moment(t.startDate).format("YYYY-MM-DD"),
-      moment(t.dueDate).format("YYYY-MM-DD"),
-      `${t.progress}%`,
-    ]);
-    const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
-    const blob = new Blob(["\uFEFF" + csv], {
-      type: "text/csv;charset=utf-8;",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `tasks_report_${moment().format("YYYYMMDD")}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
+  const handleDownload = async () => {
+    try {
+      const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
+        responseType: "blob",
+      });
 
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "task_details.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading expense details:", error);
+      message.error("Failed to download expense details. Please try again.");
+    }
+  };
   const tabItems = [
     { key: "All", label: <Badge count={statusSummary.all || 0}>All</Badge> },
     {
