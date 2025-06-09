@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import Loading from "../components/Loading";
+import Forbidden from "../components/Forbidden";
 
 const PrivateRoute = ({ allowedRoles }) => {
   const { user,loading } = useContext(UserContext);
@@ -19,15 +20,7 @@ const PrivateRoute = ({ allowedRoles }) => {
   
 
   if (!allowedRoles.includes(user?.role)) {
-    console.log("Unauthorized");
-    
-    if (user.role === "admin") {
-      return <Navigate to="/admin/dashboard" replace state={{ from: location }}/>;
-    } else if (user.role === "member") {
-      return <Navigate to="/user/dashboard" replace state={{ from: location }}/>;
-    }
-    return <Navigate to="/login" replace state={{ from: location }}/>;
-
+    return <Forbidden />
   }
 
   return <Outlet />;

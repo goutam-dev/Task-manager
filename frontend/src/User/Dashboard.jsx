@@ -1,11 +1,9 @@
 import { useContext } from "react";
-import { useUserAuth } from "../hooks/useUserAuth";
 import { UserContext } from "../context/UserContext";
 
 function Dashboard() {
   console.log("Dashboard component rendered");
-  
-  useUserAuth();
+
 
   const { user } = useContext(UserContext);
 

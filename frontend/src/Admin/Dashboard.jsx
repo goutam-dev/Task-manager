@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useUserAuth } from "../hooks/useUserAuth";
 import { UserContext } from "../context/UserContext";
 import DashboardLayout from "../components/DashboardLayout";
 import axiosInstance from "../utils/axiosConfig";
@@ -12,8 +11,6 @@ import {SIDEBAR_ITEMS} from "../utils/data"
 
 
 function Dashboard() {
-  useUserAuth();
-
   const { user } = useContext(UserContext);
   console.log(user);
 
