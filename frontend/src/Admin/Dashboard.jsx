@@ -1,13 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useUserAuth } from "../hooks/useUserAuth";
 import { UserContext } from "../context/UserContext";
-import {
-  AppstoreOutlined,
-  UnorderedListOutlined,
-  PlusSquareOutlined,
-  TeamOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
 import DashboardLayout from "../components/DashboardLayout";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
@@ -15,40 +8,8 @@ import AdminSummary from "../components/AdminSummary";
 import RecentTasksSection from "../components/RecentTasksSection";
 import TaskCharts from "../components/TaskCharts";
 import { Space } from "antd";
+import {SIDEBAR_ITEMS} from "../utils/data"
 
-const SIDEBAR_ITEMS = [
-  {
-    key: "dashboard",
-    label: "Dashboard",
-    icon: <AppstoreOutlined />,
-    path: "/admin/dashboard",
-  },
-  {
-    key: "manage-tasks",
-    label: "Manage Tasks",
-    icon: <UnorderedListOutlined />,
-    path: "/admin/tasks",
-  },
-  {
-    key: "create-task",
-    label: "Create Task",
-    icon: <PlusSquareOutlined />,
-    path: "/admin/create-task",
-  },
-  {
-    key: "team-members",
-    label: "Team Members",
-    icon: <TeamOutlined />,
-    path: "/admin/team-members",
-  },
-  {
-    key: "logout",
-    label: "Logout",
-    icon: <LogoutOutlined />,
-    path: "logout",
-    isLogout: true,
-  },
-];
 
 function Dashboard() {
   useUserAuth();
