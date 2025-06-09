@@ -10,37 +10,37 @@ import {
   Typography,
   message,
 } from "antd";
-import moment from "moment";
 import AssignedUsersDisplay from "./AssignedUserDisplay";
 import UserSelectionModal from "./UserSelectionModal";
 import DynamicList from "./DynamicList";
 import Loading from "./Loading";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
+import { useLocation } from "react-router-dom";
 
 const { Content } = Layout;
 const { Title } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 
-const TaskForm = ({ taskId, initialValues = {} }) => {
+const TaskForm = () => {
+  const location = useLocation();
+  const taskId = location.state || {};
+
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState(
-    initialValues.assignedTo || []
-  );
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const [assignedTouched, setAssignedTouched] = useState(false);
-  const [attachments, setAttachments] = useState(
-    initialValues.attachments || []
-  );
-  const [checklist, setChecklist] = useState(initialValues.todoChecklist || []);
+  const [attachments, setAttachments] = useState([]);
+  const [checklist, setChecklist] = useState([]);
   const [checklistTouched, setChecklistTouched] = useState(false);
 
   const init = {
     priority: "Low",
-    ...initialValues,
-    dueDate: initialValues.dueDate ? moment(initialValues.dueDate) : null,
+    title: "",
+    dueDate: null,
+    description: "",
   };
 
   const clearData = () => {
@@ -76,15 +76,14 @@ const TaskForm = ({ taskId, initialValues = {} }) => {
         text: item,
         completed: false,
       }));
-      const assignedTo = selectedUsers.map(u => u._id);
-      
+      const assignedTo = selectedUsers.map((u) => u._id);
 
       const response = await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
         ...values,
         dueDate: new Date(values.dueDate).toISOString(),
         todoChecklist,
         assignedTo,
-        attachments
+        attachments,
       });
 
       console.log(response);
