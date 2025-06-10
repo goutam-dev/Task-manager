@@ -1,6 +1,6 @@
-import { AppstoreOutlined, LogoutOutlined, PlusSquareOutlined, TeamOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { AppstoreAddOutlined, AppstoreOutlined, CheckSquareOutlined, LogoutOutlined, PlusSquareOutlined, TeamOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
-export const SIDEBAR_ITEMS = [
+export const SIDEBAR_ADMIN_ITEMS = [
   {
     key: "dashboard",
     label: "Dashboard",
@@ -24,6 +24,28 @@ export const SIDEBAR_ITEMS = [
     label: "Team Members",
     icon: <TeamOutlined />,
     path: "/admin/team-members",
+  },
+  {
+    key: "logout",
+    label: "Logout",
+    icon: <LogoutOutlined />,
+    path: "logout",
+    isLogout: true,
+  },
+];
+
+export const SIDEBAR_USER_ITEMS = [
+  {
+    key: "dashboard",
+    label: "Dashboard",
+    icon: <AppstoreAddOutlined />,
+    path: "/user/dashboard",
+  },
+  {
+    key: "my-tasks",
+    label: "My Tasks",
+    icon: <CheckSquareOutlined />,
+    path: "/user/tasks",
   },
   {
     key: "logout",

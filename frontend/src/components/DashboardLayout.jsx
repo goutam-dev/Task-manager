@@ -2,14 +2,14 @@ import { useState, useEffect, useContext } from "react";
 import { Layout, Menu, Grid, Avatar, Typography, Badge } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
-import { SIDEBAR_ITEMS as menuItems } from "../utils/data";
+import { SIDEBAR_ADMIN_ITEMS, SIDEBAR_USER_ITEMS } from "../utils/data";
 
 const { Sider, Content, Footer } = Layout;
 const { useBreakpoint } = Grid;
 const { Text } = Typography;
 
 export default function DashboardLayout({
-  defaultActiveKey = menuItems[0]?.key,
+  defaultActiveKey = "dashboard",
   children,
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -17,6 +17,7 @@ export default function DashboardLayout({
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const { user, clearUser } = useContext(UserContext);
+  const menuItems = user?.role === "admin" ? SIDEBAR_ADMIN_ITEMS : SIDEBAR_USER_ITEMS;
 
   const isMobile = !screens.md;
   useEffect(() => {

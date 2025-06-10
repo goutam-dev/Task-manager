@@ -23,6 +23,7 @@ import {
   PaperClipOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import Loading from "../components/Loading";
 
 const { Title, Text } = Typography;
 
@@ -31,8 +32,10 @@ const ManageTask = () => {
   const [statusSummary, setStatusSummary] = useState({});
   const [filterStatus, setFilterStatus] = useState("All");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const fetchSummary = async () => {
+    setLoading(true);
     try {
       const { data } = await axiosInstance.get(API_PATHS.TASKS.GET_ALL_TASKS, {
         params: { status: "" },
@@ -40,10 +43,13 @@ const ManageTask = () => {
       setStatusSummary(data.statusSummary || {});
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchTasks = async (status) => {
+    setLoading(true);
     try {
       const { data } = await axiosInstance.get(API_PATHS.TASKS.GET_ALL_TASKS, {
         params: { status: status === "All" ? "" : status },
@@ -51,6 +57,8 @@ const ManageTask = () => {
       setAllTasks(data.tasks || []);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,12 +78,12 @@ const ManageTask = () => {
   };
 
   const handleDownload = async () => {
+    setLoading(true);
     try {
       const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
         responseType: "blob",
       });
 
-      // Create a URL for the blob
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -84,9 +92,13 @@ const ManageTask = () => {
       link.click();
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
+
+      message.success("Task details downloaded successfully.");
     } catch (error) {
-      console.error("Error downloading expense details:", error);
-      message.error("Failed to download expense details. Please try again.");
+      console.error("Error downloading task details:", error);
+      message.error("Failed to download task details. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
   const tabItems = [
@@ -117,11 +129,21 @@ const ManageTask = () => {
     },
   ];
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <DashboardLayout defaultActiveKey="manage-tasks">
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
         {/* Header with Download button */}
-        <Space align="center" justify="space-between" style={{ width: "100%" }}>
+        <Space
+          style={{
+            width: "100%",
+            justifyContent: "space-between",
+            marginBottom: 24,
+          }}
+        >
           <Title level={2} style={{ margin: 0 }}>
             Manage Tasks
           </Title>
