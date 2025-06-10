@@ -10,6 +10,7 @@ import { useContext } from "react";
 import CreateTask from "./Admin/CreateTask";
 import ManageTask from "./Admin/ManageTask";
 import ManageUsers from "./Admin/ManageUsers";
+import MyTasks from "./User/MyTasks";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           
           <Route element={<PrivateRoute allowedRoles={["member"]} />}>
             <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/user/tasks" element={<MyTasks />} />
           </Route>
 
           <Route path="/" element={<Root />} />

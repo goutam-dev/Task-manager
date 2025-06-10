@@ -15,7 +15,6 @@ import {
   Space,
   Tooltip,
   Typography,
-  message,
 } from "antd";
 import {
   DownloadOutlined,
@@ -27,7 +26,7 @@ import Loading from "../components/Loading";
 
 const { Title, Text } = Typography;
 
-const ManageTask = () => {
+const MyTasks = () => {
   const [allTasks, setAllTasks] = useState([]);
   const [statusSummary, setStatusSummary] = useState({});
   const [filterStatus, setFilterStatus] = useState("All");
@@ -71,36 +70,10 @@ const ManageTask = () => {
     fetchTasks(filterStatus);
   }, [filterStatus]);
 
-  const handleClick = (task) => {
-    navigate("/admin/create-task", {
-      state: { taskID: task._id, isUpdate: true },
-    });
+  const handleClick = (taskId) => {
+    navigate(`/admin/task-details/:${taskId}`);
   };
 
-  const handleDownload = async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
-        responseType: "blob",
-      });
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "task_details.xlsx");
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      message.success("Task details downloaded successfully.");
-    } catch (error) {
-      console.error("Error downloading task details:", error);
-      message.error("Failed to download task details. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
   const tabItems = [
     { key: "All", label: <Badge count={statusSummary.all || 0}>All</Badge> },
     {
@@ -134,7 +107,7 @@ const ManageTask = () => {
   }
 
   return (
-    <DashboardLayout defaultActiveKey="manage-tasks">
+    <DashboardLayout defaultActiveKey="my-tasks">
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
         {/* Header with Download button */}
         <Space
@@ -145,15 +118,8 @@ const ManageTask = () => {
           }}
         >
           <Title level={2} style={{ margin: 0 }}>
-            Manage Tasks
+            My Tasks
           </Title>
-          <Button
-            type="primary"
-            icon={<DownloadOutlined />}
-            onClick={handleDownload}
-          >
-            Download Report
-          </Button>
         </Space>
 
         {/* Centered Tabs */}
@@ -182,7 +148,7 @@ const ManageTask = () => {
               <Col key={task._id} xs={24} sm={12} md={8} lg={6}>
                 <Card
                   hoverable
-                  onClick={() => handleClick(task)}
+                  onClick={() => handleClick(task._id)}
                   style={{ height: "100%" }}
                   styles={{
                     body: {
@@ -246,6 +212,7 @@ const ManageTask = () => {
                       whiteSpace: "nowrap",
                       marginTop: 8,
                     }}
+                    strong
                   >
                     {task.description}
                   </Text>
@@ -289,4 +256,4 @@ const ManageTask = () => {
   );
 };
 
-export default ManageTask;
+export default MyTasks;

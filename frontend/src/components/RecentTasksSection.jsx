@@ -1,10 +1,13 @@
 import { Row, Col, Typography, Button, Table, Tag, Card } from "antd";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+import { useContext } from "react";
 
 const { Title, Text } = Typography;
 
 export default function RecentTasksSection({ dashboardData }) {
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
   const data = dashboardData?.recentTasks?.slice(0, 5) || [];
 
   const columns = [
@@ -54,7 +57,7 @@ export default function RecentTasksSection({ dashboardData }) {
   return (
     <Card
       styles={{
-        container: { borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.1)"},
+        container: { borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.1)" },
         body: { padding: 24 },
       }}
     >
@@ -65,7 +68,16 @@ export default function RecentTasksSection({ dashboardData }) {
           </Title>
         </Col>
         <Col>
-          <Button type="primary" onClick={() => navigate("/admin/tasks")}>
+          <Button
+            type="primary"
+            onClick={() => {
+              if (user.role === "admin") {
+                navigate("/admin/tasks");
+              } else {
+                navigate("/user/tasks");
+              }
+            }}
+          >
             See All
           </Button>
         </Col>
