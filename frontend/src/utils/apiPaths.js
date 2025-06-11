@@ -8,7 +8,7 @@ export const API_PATHS = {
         UPLOAD_IMAGE: `/api/auth/upload-image`,
     },
     TASKS:{
-        GET_DASHBOARD_DATA: `/api/tasks/dashboard-data`,
+        GET_ADMIN_DASHBOARD_DATA: `/api/tasks/dashboard-data`,
         GET_USER_DASHBOARD_DATA: `/api/tasks/user-dashboard-data`,
         CREATE_TASK: "/api/tasks",
         GET_ALL_TASKS: "/api/tasks",

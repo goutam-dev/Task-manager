@@ -1,27 +1,24 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import DashboardLayout from "../components/DashboardLayout";
 import axiosInstance from "../utils/axiosConfig";
-import { API_PATHS } from "../utils/apiPaths";
 import AdminSummary from "../components/AdminSummary";
 import RecentTasksSection from "../components/RecentTasksSection";
 import TaskCharts from "../components/TaskCharts";
 import { Space } from "antd";
 import Loading from "../components/Loading";
 
-function Dashboard() {
+function Dashboard({ path }) {
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   console.log(user);
 
   const [dashboardData, setDashboardData] = useState(null);
 
-  const getDashboardData = async () => {
+  const getDashboardData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get(
-        API_PATHS.TASKS.GET_USER_DASHBOARD_DATA
-      );
+      const response = await axiosInstance.get(path);
       if (response.data) {
         setDashboardData(response.data);
       }
@@ -30,11 +27,10 @@ function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
-
+  }, [path]);
   useEffect(() => {
     getDashboardData();
-  }, []);
+  }, [getDashboardData]);
 
   if (loading) {
     return <Loading />;

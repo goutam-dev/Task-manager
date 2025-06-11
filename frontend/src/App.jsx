@@ -1,9 +1,8 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
-import Login from "./auth/login";
 import Signup from "./auth/Signup";
 import PrivateRoute from "./routes/PrivateRoute"
 import AdminDashboard from "./Admin/Dashboard"
-import UserDashboard from "./User/Dashboard";
+import UserDashboard from "./User/UserDashboard";
 import UserProvider from "./context/userProvider";
 import { UserContext } from "./context/UserContext";
 import { useContext } from "react";
@@ -11,6 +10,7 @@ import CreateTask from "./Admin/CreateTask";
 import ManageTask from "./Admin/ManageTask";
 import ManageUsers from "./Admin/ManageUsers";
 import MyTasks from "./User/MyTasks";
+import Login from "./auth/Login";
 
 function App() {
   return (
