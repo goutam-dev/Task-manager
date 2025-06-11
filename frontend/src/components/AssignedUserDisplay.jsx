@@ -57,4 +57,4 @@ export default function AssignedUsersDisplay({ users, onClick }) {
       )}
     </div>
   );
-};
+}

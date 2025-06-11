@@ -4,7 +4,7 @@ import GenericTaskList from "../components/GenericTaskList";
 
 export default function MyTasks() {
   const navigate = useNavigate();
-  const handleClick = ({ _id }) => navigate(`/admin/task-details/:${_id}`);
+  const handleClick = ({ _id }) => navigate(`/user/task-details/${_id}`);
 
   return (
     <DashboardLayout defaultActiveKey="my-tasks">

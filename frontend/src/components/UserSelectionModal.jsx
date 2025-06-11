@@ -4,13 +4,13 @@ import axiosInstance from "../utils/axiosConfig";
 import { List, message, Modal, Spin, Avatar, Space, Checkbox } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
-const fetchUsers = async ()=>{
-    const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS)
-    console.log(response.data);
-    
-    return response.data
-}
-export default function UserSelectionModal  ({
+const fetchUsers = async () => {
+  const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS);
+  console.log(response.data);
+
+  return response.data;
+};
+export default function UserSelectionModal({
   visible,
   onCancel,
   onSave,
@@ -34,7 +34,6 @@ export default function UserSelectionModal  ({
     } catch (err) {
       message.error("Failed to load users");
       console.log(err);
-      
     } finally {
       setLoading(false);
     }
@@ -120,4 +119,4 @@ export default function UserSelectionModal  ({
       )}
     </Modal>
   );
-};
+}

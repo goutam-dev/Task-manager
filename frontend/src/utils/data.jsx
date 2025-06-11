@@ -1,4 +1,12 @@
-import { AppstoreAddOutlined, AppstoreOutlined, CheckSquareOutlined, LogoutOutlined, PlusSquareOutlined, TeamOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import {
+  AppstoreAddOutlined,
+  AppstoreOutlined,
+  CheckSquareOutlined,
+  LogoutOutlined,
+  PlusSquareOutlined,
+  TeamOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
 
 export const SIDEBAR_ADMIN_ITEMS = [
   {

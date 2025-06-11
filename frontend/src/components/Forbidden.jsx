@@ -1,6 +1,6 @@
-import React from 'react';
-import { Result, Button } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Result, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 
 /**
  * 403 Forbidden Page
@@ -12,10 +12,10 @@ const Forbidden = () => {
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
       }}
     >
       <Result

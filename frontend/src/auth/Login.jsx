@@ -18,7 +18,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const {updateUser} = useContext(UserContext);
+  const { updateUser } = useContext(UserContext);
 
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
@@ -32,7 +32,7 @@ export default function Login() {
       if (token) {
         localStorage.setItem("token", token);
         console.log("hello");
-        
+
         updateUser(response.data);
 
         if (role === "admin") {

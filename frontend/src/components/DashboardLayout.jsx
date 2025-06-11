@@ -17,7 +17,8 @@ export default function DashboardLayout({
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const { user, clearUser } = useContext(UserContext);
-  const menuItems = user?.role === "admin" ? SIDEBAR_ADMIN_ITEMS : SIDEBAR_USER_ITEMS;
+  const menuItems =
+    user?.role === "admin" ? SIDEBAR_ADMIN_ITEMS : SIDEBAR_USER_ITEMS;
 
   const isMobile = !screens.md;
   useEffect(() => {

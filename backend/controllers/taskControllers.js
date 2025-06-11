@@ -231,24 +231,28 @@ const updateTaskStatus = async (req, res) => {
 // @access  Private
 const updateTaskCheckList = async (req, res) => {
     try {
-        const { todoCheckList } = req.body;
+        const { todoChecklist } = req.body;
         const task = await Task.findById(req.params.id);
 
         if (!task) return res.status(404).json({ message: "Task not found" });
 
-        if (!task.assignedTo.includes(req.user_id) && req.user.role !== "admin") {
+        if (!(task.assignedTo.includes(req.user._id) && req.user.role !== "admin")) {
+            console.log("task assignedTo ", task.assignedTo);
+            console.log("req.user_id ", req.user_id);
+            console.log("req.user.role ", req.user.role);
+            
             return res
                 .status(403)
                 .json({ message: "Not authorized to update checkList" });
         }
 
-        task.todoCheckList = todoCheckList; // Replace with updated checkList
+        task.todoChecklist = todoChecklist; // Replace with updated checkList
 
         // Auto-update progress based on checklist completion
-        const completedCount = task.todoCheckList.filter(
+        const completedCount = task.todoChecklist.filter(
             (item) => item.completed
         ).length;
-        const totalItems = task.todoCheckList.length;
+        const totalItems = task.todoChecklist.length;
         task.progress =
             totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
 

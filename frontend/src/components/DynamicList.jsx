@@ -1,23 +1,23 @@
 // src/components/DynamicList.jsx
-import React, { useState } from 'react';
-import { Input, Button } from 'antd';
+import React, { useState } from "react";
+import { Input, Button } from "antd";
 import {
   PlusOutlined,
   EditOutlined,
   CheckOutlined,
   DeleteOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 const DynamicList = ({ items = [], onChange, placeholder }) => {
-  const [newItem, setNewItem] = useState('');
+  const [newItem, setNewItem] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
-  const [editValue, setEditValue] = useState('');
+  const [editValue, setEditValue] = useState("");
 
   const handleAdd = () => {
     const v = newItem.trim();
     if (!v) return;
     onChange([...items, v]);
-    setNewItem('');
+    setNewItem("");
   };
 
   const handleSaveEdit = () => {
@@ -27,17 +27,17 @@ const DynamicList = ({ items = [], onChange, placeholder }) => {
     updated[editingIndex] = v;
     onChange(updated);
     setEditingIndex(null);
-    setEditValue('');
+    setEditValue("");
   };
 
-  const handleRemove = idx => {
+  const handleRemove = (idx) => {
     onChange(items.filter((_, i) => i !== idx));
   };
 
   // Intercepts Enter so it doesn't submit the parent Form
-  const onNewItemKeyDown = e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();   // <-- stop Form.submit
+  const onNewItemKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // <-- stop Form.submit
       handleAdd();
     }
   };
@@ -47,16 +47,16 @@ const DynamicList = ({ items = [], onChange, placeholder }) => {
       {items.map((item, idx) => (
         <div
           key={idx}
-          style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}
+          style={{ display: "flex", alignItems: "center", marginBottom: 4 }}
         >
           {editingIndex === idx ? (
             <Input
               size="small"
               style={{ flex: 1, marginRight: 8 }}
               value={editValue}
-              onChange={e => setEditValue(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
+              onChange={(e) => setEditValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
                   e.preventDefault();
                   handleSaveEdit();
                 }
@@ -93,12 +93,12 @@ const DynamicList = ({ items = [], onChange, placeholder }) => {
         </div>
       ))}
 
-      <div style={{ display: 'flex', marginTop: 8 }}>
+      <div style={{ display: "flex", marginTop: 8 }}>
         <Input
           placeholder={placeholder}
           value={newItem}
-          onChange={e => setNewItem(e.target.value)}
-          onKeyDown={onNewItemKeyDown}       // <-- use keyDown instead of onPressEnter
+          onChange={(e) => setNewItem(e.target.value)}
+          onKeyDown={onNewItemKeyDown} // <-- use keyDown instead of onPressEnter
         />
         <Button
           type="dashed"

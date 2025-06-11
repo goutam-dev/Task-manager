@@ -39,24 +39,18 @@ export default function GenericTaskList({
     { key: "All", label: <Badge count={statusSummary.all || 0}>All</Badge> },
     {
       key: "Pending",
-      label: (
-        <Badge status="warning" count={statusSummary.pendingTasks || 0}>
-          Pending
-        </Badge>
-      ),
+      label: <Badge count={statusSummary.pendingTasks || 0}>Pending</Badge>,
     },
     {
       key: "In Progress",
       label: (
-        <Badge status="processing" count={statusSummary.inProgressTasks || 0}>
-          In Progress
-        </Badge>
+        <Badge count={statusSummary.inProgressTasks || 0}>In Progress</Badge>
       ),
     },
     {
       key: "Completed",
       label: (
-        <Badge status="success" count={statusSummary.completedTasks || 0}>
+        <Badge count={statusSummary.completedTasks || 0} offset={[-8, -2]}>
           Completed
         </Badge>
       ),
@@ -93,6 +87,7 @@ export default function GenericTaskList({
           items={tabs}
           centered
           size="large"
+          tabBarStyle={{ overflow: "visible", whiteSpace: "nowrap" }}
         />
       </div>
 

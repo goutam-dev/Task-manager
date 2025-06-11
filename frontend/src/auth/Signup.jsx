@@ -9,7 +9,7 @@ import {
   Typography,
   Upload,
   message,
-  Alert
+  Alert,
 } from "antd";
 
 import {
@@ -33,52 +33,54 @@ export default function SignUp() {
   const { token } = useToken();
   const screens = useBreakpoint();
   const [error, setError] = useState("");
-  const {updateUser} = useContext(UserContext);
+  const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
     console.log("pic", values.profilePic[0].originFileObj);
 
-
     try {
+      let profileImageUrl = "";
 
-        let profileImageUrl = ''
+      if (values.profilePic[0].originFileObj) {
+        const formData = new FormData();
+        formData.append("image", values.profilePic[0].originFileObj);
 
-        if (values.profilePic[0].originFileObj){
-            const formData = new FormData();
-            formData.append('image',values.profilePic[0].originFileObj);
+        const responseImage = await axiosInstance.post(
+          API_PATHS.AUTH.UPLOAD_IMAGE,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        profileImageUrl = responseImage.data.imageUrl;
+      }
 
-            const responseImage = await axiosInstance.post(API_PATHS.AUTH.UPLOAD_IMAGE,formData,{
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
-            });
-            profileImageUrl = responseImage.data.imageUrl;
-        }
+      const response = await axiosInstance.post(API_PATHS.AUTH.SIGNUP, {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        adminInviteToken: values.adminToken,
+        profileImageUrl,
+      });
+      console.log("Response:", response.data);
 
-        const response = await axiosInstance.post(API_PATHS.AUTH.SIGNUP,{
-            name: values.name,
-            email: values.email,
-            password: values.password,
-            adminInviteToken: values.adminToken,
-            profileImageUrl
-        });
-        console.log("Response:", response.data);
+      const { token, role } = response.data;
 
-        const { token, role } = response.data;
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(response.data);
 
-        if (token) {
-          localStorage.setItem("token", token);
-          updateUser(response.data);
-
-          if (role === "admin") {
+        if (role === "admin") {
           navigate("/admin/dashboard");
         } else if (role === "member") {
           navigate("/user/dashboard");
         }
-        }
-        } catch (error) {
+      }
+    } catch (error) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);
       } else {
@@ -172,10 +174,7 @@ export default function SignUp() {
             />
           </Form.Item>
 
-          <Form.Item
-            name="adminToken"
-            label="Admin Token"
-          >
+          <Form.Item name="adminToken" label="Admin Token">
             <Input prefix={<KeyOutlined />} placeholder="Enter Admin Token" />
           </Form.Item>
 
@@ -207,7 +206,7 @@ export default function SignUp() {
             >
               <div>
                 <UploadOutlined />
-                <div >Upload</div>
+                <div>Upload</div>
               </div>
             </Upload>
           </Form.Item>

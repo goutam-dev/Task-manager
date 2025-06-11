@@ -21,27 +21,37 @@ export default function AdminSummary({ dashboardData }) {
     year: "numeric",
   });
 
- const statsData = dashboardData?.statistics || {};
+  const statsData = dashboardData?.statistics || {};
   const stats = [
     {
       title: "Total Tasks",
       value: statsData.totalTasks,
-      icon: <UnorderedListOutlined style={{ marginRight: 6, color: "#3b82f6" }} />,
+      icon: (
+        <UnorderedListOutlined style={{ marginRight: 6, color: "#3b82f6" }} />
+      ),
     },
     {
       title: "Pending Tasks",
       value: statsData.pendingTasks,
-      icon: <ClockCircleOutlined style={{ marginRight: 6, color: "#8b5cf6" }} />,
+      icon: (
+        <ClockCircleOutlined style={{ marginRight: 6, color: "#8b5cf6" }} />
+      ),
     },
     {
       title: "Completed Tasks",
       value: statsData.completedTasks,
-      icon: <CheckCircleOutlined style={{ marginRight: 6, color: "#22c55e" }} />,
+      icon: (
+        <CheckCircleOutlined style={{ marginRight: 6, color: "#22c55e" }} />
+      ),
     },
     {
       title: "Overdue Tasks",
       value: statsData.overdueTasks,
-      icon: <ExclamationCircleOutlined style={{ marginRight: 6, color: "#ef4444" }} />,
+      icon: (
+        <ExclamationCircleOutlined
+          style={{ marginRight: 6, color: "#ef4444" }}
+        />
+      ),
     },
   ];
   return (
