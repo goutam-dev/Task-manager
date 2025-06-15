@@ -37,6 +37,7 @@ export default function GenericTaskList({
 }) {
   const [filterStatus, setFilterStatus] = React.useState(defaultActiveKey);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchInputValue, setSearchInputValue] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("newest");
   const { allTasks, statusSummary, loading } = useTasks(filterStatus, searchQuery, sortOrder);
 
@@ -46,6 +47,12 @@ export default function GenericTaskList({
     }, 300),
     []
   );
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchInputValue(value);
+    handleSearch(value);
+  };
 
   React.useEffect(() => {
     return () => {
@@ -107,7 +114,8 @@ export default function GenericTaskList({
             allowClear
             enterButton={<SearchOutlined />}
             size="large"
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={handleSearchInputChange}
+            value={searchInputValue}
           />
         </Col>
         <Col xs={24} sm={12} md={8}>
