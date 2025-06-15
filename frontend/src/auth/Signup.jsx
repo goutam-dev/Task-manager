@@ -201,7 +201,7 @@ export default function SignUp() {
                 if (!isLt2M) {
                   message.error("Image must be smaller than 2MB!");
                 }
-                return isImg && isLt2M ? true : Upload.LIST_IGNORE;
+                return isImg && isLt2M ? false : Upload.LIST_IGNORE;
               }}
             >
               <div>
