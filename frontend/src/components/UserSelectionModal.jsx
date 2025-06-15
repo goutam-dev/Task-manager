@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { API_PATHS } from "../utils/apiPaths";
 import axiosInstance from "../utils/axiosConfig";
 import { List, message, Modal, Spin, Avatar, Space, Checkbox, Input } from "antd";
 import { UserOutlined, SearchOutlined } from "@ant-design/icons";
+import { debounce } from "lodash";
 
 const { Search } = Input;
 
@@ -37,11 +38,20 @@ export default function UserSelectionModal({
     }
   };
 
+  // Create a debounced version of loadUsers
+  const debouncedLoadUsers = useCallback(
+    debounce((search) => loadUsers(search), 300),
+    []
+  );
+
   useEffect(() => {
     if (visible) {
-      loadUsers(searchQuery);
+      debouncedLoadUsers(searchQuery);
     }
-  }, [visible, searchQuery]);
+    return () => {
+      debouncedLoadUsers.cancel();
+    };
+  }, [visible, searchQuery, debouncedLoadUsers]);
 
   const handleUserToggle = (user) => {
     const isSelected = selectedUsers.some((u) => u._id === user._id);

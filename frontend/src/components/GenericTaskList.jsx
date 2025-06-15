@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Row,
   Col,
@@ -23,6 +23,7 @@ import {
 import moment from "moment";
 import Loading from "../components/Loading";
 import { useTasks } from "../hooks/useTasks";
+import { debounce } from "lodash";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -38,6 +39,19 @@ export default function GenericTaskList({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("newest");
   const { allTasks, statusSummary, loading } = useTasks(filterStatus, searchQuery, sortOrder);
+
+  const handleSearch = useCallback(
+    debounce((value) => {
+      setSearchQuery(value);
+    }, 300),
+    []
+  );
+
+  React.useEffect(() => {
+    return () => {
+      handleSearch.cancel();
+    };
+  }, [handleSearch]);
 
   if (loading) return <Loading />;
 
@@ -93,7 +107,7 @@ export default function GenericTaskList({
             allowClear
             enterButton={<SearchOutlined />}
             size="large"
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </Col>
         <Col xs={24} sm={12} md={8}>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import Loading from "../components/Loading";
 import {
@@ -15,6 +15,7 @@ import {
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
+import { debounce } from "lodash";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -41,9 +42,17 @@ function ManageUsers() {
     }
   };
 
+  const debouncedGetUsers = useCallback(
+    debounce((search) => getUsers(search), 300),
+    []
+  );
+
   useEffect(() => {
-    getUsers(searchQuery);
-  }, [searchQuery]);
+    debouncedGetUsers(searchQuery);
+    return () => {
+      debouncedGetUsers.cancel();
+    };
+  }, [searchQuery, debouncedGetUsers]);
 
   const handleDownloadReport = async () => {
     setLoading(true);
