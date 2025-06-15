@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { API_PATHS } from "../utils/apiPaths";
 import axiosInstance from "../utils/axiosConfig";
-import { List, message, Modal, Spin, Avatar, Space, Checkbox } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { List, message, Modal, Spin, Avatar, Space, Checkbox, Input } from "antd";
+import { UserOutlined, SearchOutlined } from "@ant-design/icons";
 
-const fetchUsers = async () => {
-  const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS);
-  console.log(response.data);
+const { Search } = Input;
 
+const fetchUsers = async (search = "") => {
+  const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS, {
+    params: { search }
+  });
   return response.data;
 };
+
 export default function UserSelectionModal({
   visible,
   onCancel,
@@ -19,17 +22,12 @@ export default function UserSelectionModal({
 }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    if (visible) {
-      loadUsers();
-    }
-  }, [visible]);
-
-  const loadUsers = async () => {
+  const loadUsers = async (search) => {
     setLoading(true);
     try {
-      const userData = await fetchUsers();
+      const userData = await fetchUsers(search);
       setUsers(userData);
     } catch (err) {
       message.error("Failed to load users");
@@ -38,6 +36,12 @@ export default function UserSelectionModal({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (visible) {
+      loadUsers(searchQuery);
+    }
+  }, [visible, searchQuery]);
 
   const handleUserToggle = (user) => {
     const isSelected = selectedUsers.some((u) => u._id === user._id);
@@ -50,6 +54,10 @@ export default function UserSelectionModal({
 
   const handleSave = () => {
     onSave(selectedUsers);
+  };
+
+  const handleSearch = (value) => {
+    setSearchQuery(value);
   };
 
   return (
@@ -68,9 +76,24 @@ export default function UserSelectionModal({
         },
       }}
     >
+      <div style={{ marginBottom: 16 }}>
+        <Search
+          placeholder="Search users by name or email..."
+          allowClear
+          enterButton={<SearchOutlined />}
+          size="large"
+          onChange={(e) => handleSearch(e.target.value)}
+          value={searchQuery}
+        />
+      </div>
+      
       {loading ? (
         <div style={{ textAlign: "center", padding: "40px" }}>
           <Spin size="large" />
+        </div>
+      ) : users.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <p>No users found matching your search.</p>
         </div>
       ) : (
         <List
@@ -109,7 +132,14 @@ export default function UserSelectionModal({
                     </Space>
                   }
                   description={
-                    <span style={{ color: "#666" }}>{user.email}</span>
+                    <Space direction="vertical" size={4}>
+                      <span style={{ color: "#666" }}>{user.email}</span>
+                      <Space size={16}>
+                        <span>Pending: {user.pendingTasks}</span>
+                        <span>In Progress: {user.inProgressTasks}</span>
+                        <span>Completed: {user.completedTasks}</span>
+                      </Space>
+                    </Space>
                   }
                 />
               </List.Item>
