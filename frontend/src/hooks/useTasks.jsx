@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
 
-export function useTasks(statusFilter = "All") {
+export function useTasks(statusFilter = "All", searchQuery = "", sortOrder = "newest") {
   const [allTasks, setAllTasks] = useState([]);
   const [statusSummary, setStatusSummary] = useState({});
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,13 @@ export function useTasks(statusFilter = "All") {
       try {
         const { data } = await axiosInstance.get(
           API_PATHS.TASKS.GET_ALL_TASKS,
-          { params: { status: "" } }
+          { 
+            params: { 
+              status: "",
+              search: searchQuery,
+              sortBy: sortOrder
+            } 
+          }
         );
         setStatusSummary(data.statusSummary || {});
       } catch (err) {
@@ -29,7 +35,13 @@ export function useTasks(statusFilter = "All") {
         const status = statusFilter === "All" ? "" : statusFilter;
         const { data } = await axiosInstance.get(
           API_PATHS.TASKS.GET_ALL_TASKS,
-          { params: { status } }
+          { 
+            params: { 
+              status,
+              search: searchQuery,
+              sortBy: sortOrder
+            } 
+          }
         );
         setAllTasks(data.tasks || []);
       } catch (err) {
@@ -41,7 +53,7 @@ export function useTasks(statusFilter = "All") {
 
     fetchSummary();
     fetchTasks();
-  }, [statusFilter]);
+  }, [statusFilter, searchQuery, sortOrder]);
 
   return { allTasks, statusSummary, loading };
 }
