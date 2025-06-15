@@ -5,7 +5,7 @@ const Task = require("../models/Task");
 // @access  Private
 const getTasks = async (req, res) => {
   try {
-    const { status } = req.query;
+    const { status, search, sortBy } = req.query;
     let filter = {};
     
     // Apply status filter if provided
@@ -13,69 +13,78 @@ const getTasks = async (req, res) => {
         filter.status = status;
     }
 
+    // Apply search filter if provided
+    if (search) {
+        filter.$or = [
+            { title: { $regex: search, $options: 'i' } },
+            { description: { $regex: search, $options: 'i' } }
+        ];
+    }
+
+    // Determine sort order
+    let sort = {};
+    if (sortBy === 'newest') {
+        sort.dueDate = -1; // descending
+    } else if (sortBy === 'oldest') {
+        sort.dueDate = 1; // ascending
+    }
+
     let tasks;
 
     if (req.user.role === "admin") {
         // Admin can see all tasks with optional status filter
-        tasks = await Task.find(filter).populate(
-            "assignedTo",
-            "name email profileImageUrl"
-        );
+        tasks = await Task.find(filter)
+            .sort(sort)
+            .populate("assignedTo", "name email profileImageUrl");
     } else {
         // Regular users only see their own tasks
         tasks = await Task.find({
             ...filter,
             assignedTo: req.user._id
-        }).populate(
-            "assignedTo",
-            "name email profileImageUrl"
-        );
+        })
+        .sort(sort)
+        .populate("assignedTo", "name email profileImageUrl");
     }
 
     // Add completed todoChecklist count to each task
     tasks = tasks.map(task => {
-    const completedCount = task.todoChecklist.filter(item => item.completed).length;
-    return {
-        ...task.toObject(),  // Convert Mongoose document to plain JavaScript object
-        completedTodoCount: completedCount,
-        totalTodoCount: task.todoChecklist.length  // Added for completeness
-    };
-});
-// Define base filter based on user role
-const baseFilter = req.user.role === 'admin' 
-    ? { ...filter } 
-    : { ...filter, assignedTo: req.user._id };
-
-// Status summary counts using Promise.all for parallel execution
-const [allTasks, pendingTasks, inProgressTasks, completedTasks] = await Promise.all([
-    // All tasks count
-    Task.countDocuments(baseFilter),
-    
-    // Pending tasks count
-    Task.countDocuments({ ...baseFilter, status: "Pending" }),
-    
-    // In Progress tasks count
-    Task.countDocuments({ ...baseFilter, status: "In Progress" }),
-    
-    // Completed tasks count
-    Task.countDocuments({ ...baseFilter, status: "Completed" })
-]);
-res.json({
-    tasks,
-    statusSummary: {
-        all : allTasks,
-        pendingTasks,
-        inProgressTasks,
-        completedTasks
-    }
-});
-    
-} catch (error) {
-    res.status(500).json({
-        message: "Server error",
-        error: error.message
+        const completedCount = task.todoChecklist.filter(item => item.completed).length;
+        return {
+            ...task.toObject(),
+            completedTodoCount: completedCount,
+            totalTodoCount: task.todoChecklist.length
+        };
     });
-}
+
+    // Define base filter based on user role
+    const baseFilter = req.user.role === 'admin' 
+        ? { ...filter } 
+        : { ...filter, assignedTo: req.user._id };
+
+    // Status summary counts using Promise.all for parallel execution
+    const [allTasks, pendingTasks, inProgressTasks, completedTasks] = await Promise.all([
+        Task.countDocuments(baseFilter),
+        Task.countDocuments({ ...baseFilter, status: "Pending" }),
+        Task.countDocuments({ ...baseFilter, status: "In Progress" }),
+        Task.countDocuments({ ...baseFilter, status: "Completed" })
+    ]);
+
+    res.json({
+        tasks,
+        statusSummary: {
+            all: allTasks,
+            pendingTasks,
+            inProgressTasks,
+            completedTasks
+        }
+    });
+    
+  } catch (error) {
+      res.status(500).json({
+          message: "Server error",
+          error: error.message
+      });
+  }
 };
 
 // @desc    Get task by ID

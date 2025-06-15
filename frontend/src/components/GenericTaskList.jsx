@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Row,
   Col,
@@ -11,17 +11,22 @@ import {
   Space,
   Tooltip,
   Typography,
+  Input,
+  Select,
 } from "antd";
 import {
   DownloadOutlined,
   FileTextOutlined,
   PaperClipOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import Loading from "../components/Loading";
 import { useTasks } from "../hooks/useTasks";
+import { debounce } from "lodash";
 
 const { Title, Text } = Typography;
+const { Search } = Input;
 
 export default function GenericTaskList({
   title,
@@ -31,7 +36,29 @@ export default function GenericTaskList({
   onDownload,
 }) {
   const [filterStatus, setFilterStatus] = React.useState(defaultActiveKey);
-  const { allTasks, statusSummary, loading } = useTasks(filterStatus);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchInputValue, setSearchInputValue] = React.useState("");
+  const [sortOrder, setSortOrder] = React.useState("newest");
+  const { allTasks, statusSummary, loading } = useTasks(filterStatus, searchQuery, sortOrder);
+
+  const handleSearch = useCallback(
+    debounce((value) => {
+      setSearchQuery(value);
+    }, 300),
+    []
+  );
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchInputValue(value);
+    handleSearch(value);
+  };
+
+  React.useEffect(() => {
+    return () => {
+      handleSearch.cancel();
+    };
+  }, [handleSearch]);
 
   if (loading) return <Loading />;
 
@@ -80,6 +107,31 @@ export default function GenericTaskList({
         )}
       </Space>
 
+      <Row gutter={[16, 16]} align="middle">
+        <Col xs={24} sm={12} md={8}>
+          <Search
+            placeholder="Search tasks..."
+            allowClear
+            enterButton={<SearchOutlined />}
+            size="large"
+            onChange={handleSearchInputChange}
+            value={searchInputValue}
+          />
+        </Col>
+        <Col xs={24} sm={12} md={8}>
+          <Select
+            style={{ width: '100%' }}
+            size="large"
+            value={sortOrder}
+            onChange={setSortOrder}
+            options={[
+              { value: 'newest', label: 'Newest Due Date First' },
+              { value: 'oldest', label: 'Oldest Due Date First' },
+            ]}
+          />
+        </Col>
+      </Row>
+
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Tabs
           activeKey={filterStatus}
@@ -94,7 +146,9 @@ export default function GenericTaskList({
       {allTasks.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: 50 }}>
           <Text type="secondary">
-            {filterStatus === "All"
+            {searchQuery 
+              ? "No tasks found matching your search."
+              : filterStatus === "All"
               ? "No tasks found."
               : `No ${filterStatus.toLowerCase()} tasks found.`}
           </Text>
@@ -132,46 +186,30 @@ export default function GenericTaskList({
                   </Tooltip>
                 }
               >
-                <Text type="secondary">
-                  Start: {moment(task.startDate).format("DD MMM YYYY")}
-                </Text>
-                <br />
-                <Text type="secondary">
-                  Due: {moment(task.dueDate).format("DD MMM YYYY")}
-                </Text>
-                <Text ellipsis style={{ marginTop: 8, display: "block" }}>
-                  {task.description}
-                </Text>
-                <Progress
-                  percent={task.progress}
-                  size="small"
-                  status={task.progress === 100 ? "success" : "active"}
-                />
-                <Text style={{ marginTop: 4 }}>
-                  {task.completedTodoCount} of {task.totalTodoCount} todos
-                  completed
-                </Text>
-                <Space
-                  style={{
-                    marginTop: 8,
-                    justifyContent: "space-between",
-                    width: "100%",
-                  }}
-                >
-                  <Space>
-                    {task.assignedTo.map((user) => (
-                      <Tooltip key={user._id} title={user.name}>
-                        <Avatar src={user.profileImageUrl} />
-                      </Tooltip>
-                    ))}
-                  </Space>
-                  {task.attachments?.length > 0 && (
-                    <Space>
-                      <PaperClipOutlined />
-                      <Text>{task.attachments.length}</Text>
-                    </Space>
-                  )}
-                </Space>
+                <p style={{ margin: 0, color: "#666" }}>
+                  {task.description?.length > 100
+                    ? `${task.description.substring(0, 100)}...`
+                    : task.description}
+                </p>
+                <div style={{ marginTop: 12 }}>
+                  <Progress
+                    percent={
+                      task.status === "Completed"
+                        ? 100
+                        : task.status === "In Progress"
+                        ? 50
+                        : 0
+                    }
+                    size="small"
+                    status={
+                      task.status === "Completed"
+                        ? "success"
+                        : task.status === "In Progress"
+                        ? "active"
+                        : "normal"
+                    }
+                  />
+                </div>
               </Card>
             </Col>
           ))}
