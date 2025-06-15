@@ -38,8 +38,12 @@ export default function GenericTaskList({
   const [filterStatus, setFilterStatus] = React.useState(defaultActiveKey);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [searchInputValue, setSearchInputValue] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("newest");
-  const { allTasks, statusSummary, loading } = useTasks(filterStatus, searchQuery, sortOrder);
+  const [sortOrder, setSortOrder] = React.useState("oldest");
+  const { allTasks, statusSummary, loading } = useTasks(
+    filterStatus,
+    searchQuery,
+    sortOrder
+  );
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -120,13 +124,13 @@ export default function GenericTaskList({
         </Col>
         <Col xs={24} sm={12} md={8}>
           <Select
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             size="large"
             value={sortOrder}
             onChange={setSortOrder}
             options={[
-              { value: 'newest', label: 'Newest Due Date First' },
-              { value: 'oldest', label: 'Oldest Due Date First' },
+              { value: "oldest", label: "Newest Due Date First" },
+              { value: "newest", label: "Oldest Due Date First" },
             ]}
           />
         </Col>
@@ -146,7 +150,7 @@ export default function GenericTaskList({
       {allTasks.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: 50 }}>
           <Text type="secondary">
-            {searchQuery 
+            {searchQuery
               ? "No tasks found matching your search."
               : filterStatus === "All"
               ? "No tasks found."
@@ -186,6 +190,14 @@ export default function GenericTaskList({
                   </Tooltip>
                 }
               >
+                <Text type="secondary">
+                  Start: {moment(task.startDate).format("DD MMM YYYY")}
+                </Text>
+                <br />
+                <Text type="secondary">
+                  Due: {moment(task.dueDate).format("DD MMM YYYY")}
+                </Text>
+
                 <p style={{ margin: 0, color: "#666" }}>
                   {task.description?.length > 100
                     ? `${task.description.substring(0, 100)}...`
@@ -209,6 +221,32 @@ export default function GenericTaskList({
                         : "normal"
                     }
                   />
+
+                  <Text style={{ marginTop: 4 }}>
+                    {task.completedTodoCount} of {task.totalTodoCount} todos
+                    completed
+                  </Text>
+                  <Space
+                    style={{
+                      marginTop: 8,
+                      justifyContent: "space-between",
+                      width: "100%",
+                    }}
+                  >
+                    <Space>
+                      {task.assignedTo.map((user) => (
+                        <Tooltip key={user._id} title={user.name}>
+                          <Avatar src={user.profileImageUrl} />
+                        </Tooltip>
+                      ))}
+                    </Space>
+                    {task.attachments?.length > 0 && (
+                      <Space>
+                        <PaperClipOutlined />
+                        <Text>{task.attachments.length}</Text>
+                      </Space>
+                    )}
+                  </Space>
                 </div>
               </Card>
             </Col>
