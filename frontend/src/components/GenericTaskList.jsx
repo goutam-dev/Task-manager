@@ -38,7 +38,7 @@ export default function GenericTaskList({
   const [filterStatus, setFilterStatus] = React.useState(defaultActiveKey);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [searchInputValue, setSearchInputValue] = React.useState("");
-  const [sortOrder, setSortOrder] = React.useState("oldest");
+  const [sortOrder, setSortOrder] = React.useState("newest");
   const { allTasks, statusSummary, loading } = useTasks(
     filterStatus,
     searchQuery,
@@ -129,8 +129,8 @@ export default function GenericTaskList({
             value={sortOrder}
             onChange={setSortOrder}
             options={[
-              { value: "oldest", label: "Newest Due Date First" },
-              { value: "newest", label: "Oldest Due Date First" },
+              { value: "newest", label: "Newest Due Date First" },
+              { value: "oldest", label: "Oldest Due Date First" },
             ]}
           />
         </Col>

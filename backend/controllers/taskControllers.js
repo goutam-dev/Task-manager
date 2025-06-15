@@ -24,9 +24,9 @@ const getTasks = async (req, res) => {
     // Determine sort order
     let sort = {};
     if (sortBy === 'newest') {
-        sort.dueDate = -1; // descending
+        sort.dueDate = 1; // descending
     } else if (sortBy === 'oldest') {
-        sort.dueDate = 1; // ascending
+        sort.dueDate = -1; // ascending
     }
 
     let tasks;

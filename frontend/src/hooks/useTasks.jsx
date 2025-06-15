@@ -21,6 +21,8 @@ export function useTasks(statusFilter = "All", searchQuery = "", sortOrder = "ne
             } 
           }
         );
+        console.log("Status Summary Data:", data );
+        
         setStatusSummary(data.statusSummary || {});
       } catch (err) {
         console.error(err);

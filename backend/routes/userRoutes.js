@@ -1,9 +1,10 @@
 const express = require("express");
 const { adminOnly, protect } = require("../middlewears/authMiddlewears"); // Fixed path
 const {
-    getUsers,
-    getUserById,
-    deleteUser
+  getUsers,
+  getUserById,
+  deleteUser,
+  getUserDetails
 } = require("../controllers/userControllers"); // Added controller imports
 
 const router = express.Router();
@@ -12,5 +13,9 @@ const router = express.Router();
 router.get("/", protect, adminOnly, getUsers); // Get all users (Admin only)
 router.get("/:id", protect, getUserById); // Get a specific user
 router.delete("/:id", protect, adminOnly, deleteUser); // Delete user (Admin only)
+// @route   GET /api/users/details/:id
+// @desc    Get detailed user information with tasks (Admin only)
+// @access  Private (Admin)
+router.get("/details/:id", protect, adminOnly, getUserDetails);
 
 module.exports = router;

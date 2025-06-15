@@ -19,6 +19,7 @@ export const API_PATHS = {
   },
   USERS: {
     GET_ALL_USERS: "/api/users",
+    GET_USER_DETAILS: "/api/users/details", // This will be used with /:id parameter
   },
   REPORTS: {
     EXPORT_TASKS: "/api/reports/export/tasks",

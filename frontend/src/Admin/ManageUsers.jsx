@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import Loading from "../components/Loading";
+import UserDetailView from "../components/UserDetailView"; // New component we'll create
 import {
   Row,
   Col,
@@ -24,6 +25,8 @@ function ManageUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showDetailView, setShowDetailView] = useState(false);
 
   const getUsers = async (search) => {
     setLoading(true);
@@ -79,8 +82,28 @@ function ManageUsers() {
     }
   };
 
+  const handleUserCardClick = (user) => {
+    setSelectedUser(user);
+    setShowDetailView(true);
+  };
+
+  const handleBackToList = () => {
+    setShowDetailView(false);
+    setSelectedUser(null);
+  };
+
   if (loading) {
     return <Loading />;
+  }
+
+  // Show detailed view if a user is selected
+  if (showDetailView && selectedUser) {
+    return (
+      <UserDetailView 
+        user={selectedUser} 
+        onBack={handleBackToList}
+      />
+    );
   }
 
   return (
@@ -129,9 +152,11 @@ function ManageUsers() {
               <Col key={user._id} xs={24} sm={12} lg={8}>
                 <Card
                   hoverable
+                  onClick={() => handleUserCardClick(user)}
                   style={{
                     borderRadius: 16,
                     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+                    cursor: "pointer",
                   }}
                   styles={{ body: { padding: 24 } }}
                 >
