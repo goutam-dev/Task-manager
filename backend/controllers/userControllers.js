@@ -7,26 +7,36 @@ const bcrypt = require("bcryptjs");
 // @access  Private (Admin)
 const getUsers = async (req, res) => {
     try {
-        // Fetch all users excluding password fields
-       const users = await User.find({ role: "member" }).select("-password");
+        const { search } = req.query;
+        let filter = { role: "member" };
 
-// Add task counts to each user
-const usersWithTaskCounts = await Promise.all(users.map(async (user) => {
-    const pendingTasks = await Task.countDocuments({ assignedTo: user._id, status: "Pending" });
-    const inProgressTasks = await Task.countDocuments({ assignedTo: user._id, status: "In Progress" });
-    const completedTasks = await Task.countDocuments({ assignedTo: user._id, status: "Completed" });
+        // Add search filter if provided
+        if (search) {
+            filter.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+            ];
+        }
 
-    return {
-        ...user._doc, // Include all existing user data
-        pendingTasks,
-        inProgressTasks,
-        completedTasks,
-    };
-}));
+        // Fetch all users excluding password fields with search filter
+        const users = await User.find(filter).select("-password");
 
-res.json(usersWithTaskCounts);
+        // Add task counts to each user
+        const usersWithTaskCounts = await Promise.all(users.map(async (user) => {
+            const pendingTasks = await Task.countDocuments({ assignedTo: user._id, status: "Pending" });
+            const inProgressTasks = await Task.countDocuments({ assignedTo: user._id, status: "In Progress" });
+            const completedTasks = await Task.countDocuments({ assignedTo: user._id, status: "Completed" });
+
+            return {
+                ...user._doc,
+                pendingTasks,
+                inProgressTasks,
+                completedTasks,
+            };
+        }));
+
+        res.json(usersWithTaskCounts);
     } catch (error) {
-        // Fixed error handling syntax
         res.status(500).json({ 
             message: "Server error", 
             error: error.message 
