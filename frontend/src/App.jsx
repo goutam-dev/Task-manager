@@ -18,6 +18,7 @@ import ManageUsers from "./Admin/ManageUsers";
 import MyTasks from "./User/MyTasks";
 import Login from "./auth/Login";
 import TaskDetails from "./User/TaskDetails";
+import NotFoundPage from "./components/NotFoundPage";
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
           </Route>
 
           <Route path="/" element={<Root />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
+          <Route path="/404" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>
