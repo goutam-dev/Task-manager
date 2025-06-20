@@ -35,6 +35,8 @@ export function useTasks(statusFilter = "All", searchQuery = "", sortOrder = "ne
       setLoading(true);
       try {
         const status = statusFilter === "All" ? "" : statusFilter;
+        console.log(status);
+        
         const { data } = await axiosInstance.get(
           API_PATHS.TASKS.GET_ALL_TASKS,
           { 
@@ -45,6 +47,8 @@ export function useTasks(statusFilter = "All", searchQuery = "", sortOrder = "ne
             } 
           }
         );
+        console.log("Tasks Data:", data);
+        
         setAllTasks(data.tasks || []);
       } catch (err) {
         console.error(err);

@@ -112,6 +112,8 @@ function TaskDetails() {
         return <ExclamationCircleOutlined style={{ color: "#faad14" }} />;
       case "pending":
         return <ClockCircleOutlined style={{ color: "#8c8c8c" }} />;
+      case "overdue":
+        return <ExclamationCircleOutlined style={{ color: "#ff4d4f" }} />;
       default:
         return <ClockCircleOutlined style={{ color: "#8c8c8c" }} />;
     }

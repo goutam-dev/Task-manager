@@ -83,6 +83,8 @@ function UserDetailView({ user, onBack }) {
         return "#1890ff";
       case "pending":
         return "#faad14";
+      case "overdue":
+        return "#ff4d4f";
       default:
         return "#d9d9d9";
     }
@@ -96,6 +98,8 @@ function UserDetailView({ user, onBack }) {
         return <ClockCircleOutlined />;
       case "pending":
         return <ExclamationCircleOutlined />;
+      case "overdue":
+        return <ExclamationCircleOutlined style={{ color: "#ff4d4f" }} />;
       default:
         return <ClockCircleOutlined />;
     }
@@ -158,8 +162,8 @@ function UserDetailView({ user, onBack }) {
           <Divider />
 
           {/* Task Summary */}
-          <Row gutter={[24, 24]}>
-            <Col xs={12} sm={8}>
+          <Row gutter={[24, 24]} justify="center">
+            <Col xs={12} sm={6}>
               <div style={{ textAlign: "center" }}>
                 <Text
                   strong
@@ -174,7 +178,8 @@ function UserDetailView({ user, onBack }) {
                 </Text>
               </div>
             </Col>
-            <Col xs={12} sm={8}>
+
+            <Col xs={12} sm={6}>
               <div style={{ textAlign: "center" }}>
                 <Text
                   strong
@@ -189,7 +194,8 @@ function UserDetailView({ user, onBack }) {
                 </Text>
               </div>
             </Col>
-            <Col xs={12} sm={8}>
+
+            <Col xs={12} sm={6}>
               <div style={{ textAlign: "center" }}>
                 <Text
                   strong
@@ -201,6 +207,23 @@ function UserDetailView({ user, onBack }) {
                 </Text>
                 <Text strong style={{ color: "#52c41a", fontSize: 16 }}>
                   Completed
+                </Text>
+              </div>
+            </Col>
+
+            {/* New Col for Overdue */}
+            <Col xs={12} sm={6}>
+              <div style={{ textAlign: "center" }}>
+                <Text
+                  strong
+                  style={{ display: "block", fontSize: 28, color: "#ff4d4f" }}
+                >
+                  {userDetails?.statusSummary?.overdue ??
+                    user?.overdueTasks ??
+                    0}
+                </Text>
+                <Text strong style={{ color: "#ff4d4f", fontSize: 16 }}>
+                  Overdue Tasks
                 </Text>
               </div>
             </Col>
@@ -237,7 +260,7 @@ function UserDetailView({ user, onBack }) {
                         state: { taskID: task._id, isUpdate: true },
                       })
                     }
-                    style={{ width: "100%", cursor:"pointer" }}
+                    style={{ width: "100%", cursor: "pointer" }}
                   >
                     <Row gutter={[16, 16]}>
                       <Col xs={24} lg={16}>

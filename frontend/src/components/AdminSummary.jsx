@@ -45,6 +45,13 @@ export default function AdminSummary({ dashboardData }) {
       ),
     },
     {
+      title: "In Progress Tasks",
+      value: statsData.inProgressTasks,
+      icon: (
+        <ClockCircleOutlined style={{ marginRight: 6, color: "#f59e0b" }} />
+      ),
+    },
+    {
       title: "Overdue Tasks",
       value: statsData.overdueTasks,
       icon: (
@@ -67,7 +74,7 @@ export default function AdminSummary({ dashboardData }) {
 
       <Row gutter={16} style={{ marginTop: 24 }}>
         {stats.map(({ title, value, icon }) => (
-          <Col xs={24} sm={12} md={6} key={title}>
+          <Col xs={24} sm={12} lg={4} md={7} key={title}>
             <Statistic
               title={title}
               value={value}

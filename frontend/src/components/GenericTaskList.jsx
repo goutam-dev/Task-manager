@@ -24,6 +24,7 @@ import moment from "moment";
 import Loading from "../components/Loading";
 import { useTasks } from "../hooks/useTasks";
 import { debounce } from "lodash";
+import TaskProgress from "./TaskProgress";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -70,19 +71,21 @@ export default function GenericTaskList({
     { key: "All", label: <Badge count={statusSummary.all || 0}>All</Badge> },
     {
       key: "Pending",
-      label: <Badge count={statusSummary.pendingTasks || 0}>Pending</Badge>,
+      label: <Badge count={statusSummary.pending || 0}>Pending</Badge>,
     },
     {
       key: "In Progress",
-      label: (
-        <Badge count={statusSummary.inProgressTasks || 0}>In Progress</Badge>
-      ),
+      label: <Badge count={statusSummary.inProgress || 0}>In Progress</Badge>,
     },
     {
       key: "Completed",
+      label: <Badge count={statusSummary.completed || 0}>Completed</Badge>,
+    },
+    {
+      key: "Overdue",
       label: (
-        <Badge count={statusSummary.completedTasks || 0} offset={[-8, -2]}>
-          Completed
+        <Badge count={statusSummary.overdue || 0} offset={[-8, -2]}>
+          Overdue
         </Badge>
       ),
     },
@@ -204,28 +207,7 @@ export default function GenericTaskList({
                     : task.description}
                 </p>
                 <div style={{ marginTop: 12 }}>
-                  <Progress
-                    percent={
-                      task.status === "Completed"
-                        ? 100
-                        : task.status === "In Progress"
-                        ? 50
-                        : 0
-                    }
-                    size="small"
-                    status={
-                      task.status === "Completed"
-                        ? "success"
-                        : task.status === "In Progress"
-                        ? "active"
-                        : "normal"
-                    }
-                  />
-
-                  <Text style={{ marginTop: 4 }}>
-                    {task.completedTodoCount} of {task.totalTodoCount} todos
-                    completed
-                  </Text>
+                  <TaskProgress task={task} />
                   <Space
                     style={{
                       marginTop: 8,

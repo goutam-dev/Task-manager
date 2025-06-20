@@ -176,7 +176,7 @@ function ManageUsers() {
                       >
                         {user?.pendingTasks ?? 0}
                       </Text>
-                      <Text strong style={{ color: "#faad14" }}>
+                      <Text strong style={{ color: "#faad14", fontSize: 13 }}>
                         Pending
                       </Text>
                     </div>
@@ -187,7 +187,7 @@ function ManageUsers() {
                       >
                         {user?.inProgressTasks ?? 0}
                       </Text>
-                      <Text strong style={{ color: "#1890ff" }}>
+                      <Text strong style={{ color: "#1890ff", fontSize: 13 }}>
                         In Progress
                       </Text>
                     </div>
@@ -198,8 +198,19 @@ function ManageUsers() {
                       >
                         {user?.completedTasks ?? 0}
                       </Text>
-                      <Text strong style={{ color: "#52c41a" }}>
+                      <Text strong style={{ color: "#52c41a", fontSize: 13 }}>
                         Completed
+                      </Text>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <Text
+                        strong
+                        style={{ display: "block", fontSize: 20, color: "#faad14" }}
+                      >
+                        {user?.overdueTasks ?? 0}
+                      </Text>
+                      <Text strong style={{ color: "#faad14", fontSize: 13 }}>
+                        Overdue
                       </Text>
                     </div>
                   </Space>
