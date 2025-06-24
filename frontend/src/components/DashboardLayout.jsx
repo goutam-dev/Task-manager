@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-import { Layout, Menu, Grid, Avatar, Typography, Badge } from "antd";
+import { Layout, Menu, Grid, Avatar, Typography, Badge, Switch } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { ThemeContext } from "../context/ThemeContext";
 import { SIDEBAR_ADMIN_ITEMS, SIDEBAR_USER_ITEMS } from "../utils/data";
+import { MoonOutlined, SunOutlined } from "@ant-design/icons";
 
 const { Sider, Content, Footer } = Layout;
 const { useBreakpoint } = Grid;
@@ -17,6 +19,7 @@ export default function DashboardLayout({
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const { user, clearUser } = useContext(UserContext);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const menuItems =
     user?.role === "admin" ? SIDEBAR_ADMIN_ITEMS : SIDEBAR_USER_ITEMS;
 
@@ -45,30 +48,48 @@ export default function DashboardLayout({
   }));
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout
+      style={{
+        minHeight: "100vh",
+        background: isDarkMode ? "#181818" : undefined,
+      }}
+    >
       <Sider
         collapsible
         collapsed={collapsed}
         onCollapse={(val) => setCollapsed(val)}
         breakpoint="md"
         collapsedWidth={isMobile ? 0 : 80}
+        style={{ background: isDarkMode ? undefined : "#001529" }} // Use AntD default dark blue in both modes
       >
         <div style={{ padding: 16, textAlign: "center" }}>
           <Avatar size={48} src={user.profileImageUrl} />
           {!collapsed && (
             <div style={{ marginTop: 8 }}>
-              <Text strong style={{ fontSize: 16, color: "#fff" }}>
+              <Text
+                strong
+                style={{
+                  fontSize: 16,
+                  color: "#fff",
+                }}
+              >
                 {user.name}
               </Text>
               <br />
-              <Text type="secondary" style={{ fontSize: 12, color: "#fff" }}>
+              <Text
+                type="secondary"
+                style={{
+                  fontSize: 12,
+                  color: "#bbb",
+                }}
+              >
                 {user.email}
               </Text>
               {user.role === "admin" && (
                 <div style={{ marginTop: 6 }}>
                   <Badge
                     count="Admin"
-                    style={{ backgroundColor: "rgb(26 135 196)" }}
+                    style={{ backgroundColor: "#1677ff" }}
                   />
                 </div>
               )}
@@ -83,17 +104,39 @@ export default function DashboardLayout({
           items={items}
         />
       </Sider>
-
       <Layout
-        style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+          background: isDarkMode ? "#181818" : undefined,
+        }}
       >
+        {/* Theme toggler in header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            padding: "8px 24px 0 0",
+            background: isDarkMode ? "#23272f" : "#fff",
+          }}
+        >
+          <Switch
+            checked={isDarkMode}
+            onChange={toggleTheme}
+            checkedChildren={<MoonOutlined />}
+            unCheckedChildren={<SunOutlined />}
+          />
+        </div>
         {/* Scrollable content region */}
         <Content
           style={{
             flex: 1,
             overflowY: "auto",
             padding: "16px",
-            background: "#fff",
+            background: isDarkMode ? "#23272f" : "#fff",
+            color: isDarkMode ? "#fff" : undefined,
           }}
         >
           {children}

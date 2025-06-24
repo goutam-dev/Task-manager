@@ -7,11 +7,13 @@ import {
 } from "@ant-design/icons";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { ThemeContext } from "../context/ThemeContext";
 
 const { Title, Text } = Typography;
 
 export default function AdminSummary({ dashboardData }) {
   const { user } = useContext(UserContext);
+  const { isDarkMode } = useContext(ThemeContext);
 
   const name = user?.name || "User";
   const dateStr = new Date().toLocaleDateString(undefined, {
@@ -62,13 +64,30 @@ export default function AdminSummary({ dashboardData }) {
     },
   ];
   return (
-    <Card style={{ borderRadius: 12, overflow: "hidden" }}>
+    <Card
+      style={{
+        borderRadius: 12,
+        overflow: "hidden",
+        background: isDarkMode ? "rgb(15 26 47)" : undefined,
+      }}
+    >
       <Row justify="space-between" align="middle">
         <Col>
-          <Title level={4} style={{ marginBottom: 0 }}>
+          <Title
+            level={4}
+            style={{
+              marginBottom: 0,
+              color: isDarkMode ? "#fff" : undefined,
+            }}
+          >
             Good Morning! {name}
           </Title>
-          <Text type="secondary">{dateStr}</Text>
+          <Text
+            type="secondary"
+            style={{ color: isDarkMode ? "#bbb" : undefined }}
+          >
+            {dateStr}
+          </Text>
         </Col>
       </Row>
 
@@ -76,10 +95,17 @@ export default function AdminSummary({ dashboardData }) {
         {stats.map(({ title, value, icon }) => (
           <Col xs={24} sm={12} lg={4} md={7} key={title}>
             <Statistic
-              title={title}
+              title={
+                <span style={{ color: isDarkMode ? "#bbb" : undefined }}>
+                  {title}
+                </span>
+              }
               value={value}
               prefix={icon}
-              valueStyle={{ fontWeight: 600 }}
+              valueStyle={{
+                fontWeight: 600,
+                color: isDarkMode ? "#fff" : undefined,
+              }}
             />
           </Col>
         ))}

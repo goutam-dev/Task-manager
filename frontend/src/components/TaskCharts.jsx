@@ -1,107 +1,154 @@
-import React, { useState, useEffect } from "react";
-import { Pie, Column } from "@ant-design/plots";
+import React, { useContext, useEffect, useState } from "react";
 import { Row, Col, Card, Empty } from "antd";
+import { Pie, Bar } from "react-chartjs-2";
+import { Chart, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from "chart.js";
+import { ThemeContext } from "../context/ThemeContext";
+
+Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
 const TaskCharts = ({ data }) => {
-  const [pieChartData, setPieChartData] = useState([]);
-  const [barChartData, setBarChartData] = useState([]);
-
-  const chartHeight = 300;
+  const { isDarkMode } = useContext(ThemeContext);
+  const [pieData, setPieData] = useState({});
+  const [barData, setBarData] = useState({});
 
   useEffect(() => {
     const taskDistribution = data?.taskDistribution || {};
     const taskPriorityLevels = data?.taskPriorityLevels || {};
 
-    setPieChartData([
-      { type: "Pending", value: taskDistribution.Pending || 0 },
-      { type: "In Progress", value: taskDistribution.InProgress || 0 },
-      { type: "Completed", value: taskDistribution.Completed || 0 },
-    ]);
-
-    setBarChartData([
-      { priority: "Low", count: taskPriorityLevels.Low || 0 },
-      { priority: "Medium", count: taskPriorityLevels.Medium || 0 },
-      { priority: "High", count: taskPriorityLevels.High || 0 },
-    ]);
-  }, [data]);
-
-  const hasPieData = pieChartData.some((item) => item.value > 0);
-  const hasBarData = barChartData.some((item) => item.count > 0);
-
-  const pieConfig = {
-    interactions: [{ type: "element-active" }],
-    data: pieChartData,
-    angleField: "value",
-    colorField: "type",
-    innerRadius: 0.8,
-    height: chartHeight,
-    label: {
-      text: "value",
-      style: {
-        fontWeight: "bold",
-      },
-    },
-    legend: {
-      color: {
-        position: "right",
-        rowPadding: 5,
-      },
-    },
-    tooltip: {
-      items: [
+    setPieData({
+      labels: ["Pending", "In Progress", "Completed"],
+      datasets: [
         {
-          field: "type",
-          name: "Category",
-        },
-        {
-          field: "value",
-          name: "Value",
+          data: [
+            taskDistribution.Pending || 0,
+            taskDistribution.InProgress || 0,
+            taskDistribution.Completed || 0,
+          ],
+          backgroundColor: [
+            isDarkMode ? "#f59e42" : "#f59e42",
+            isDarkMode ? "#1677ff" : "#1677ff",
+            isDarkMode ? "#22c55e" : "#22c55e",
+          ],
+          borderColor: isDarkMode ? "#23272f" : "#fff",
+          borderWidth: 2,
         },
       ],
+    });
+
+    setBarData({
+      labels: ["Low", "Medium", "High"],
+      datasets: [
+        {
+          label: "Tasks",
+          data: [
+            taskPriorityLevels.Low || 0,
+            taskPriorityLevels.Medium || 0,
+            taskPriorityLevels.High || 0,
+          ],
+          backgroundColor: [
+            isDarkMode ? "#22c55e" : "#22c55e",
+            isDarkMode ? "#1677ff" : "#1677ff",
+            isDarkMode ? "#f59e42" : "#f59e42",
+          ],
+          borderRadius: 8,
+        },
+      ],
+    });
+  }, [data, isDarkMode]);
+
+  const pieOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "right",
+        labels: {
+          color: isDarkMode ? "#fff" : "#222",
+          font: { size: 14 },
+        },
+      },
+      tooltip: {
+        backgroundColor: isDarkMode ? "#23272f" : "#fff",
+        titleColor: isDarkMode ? "#fff" : "#222",
+        bodyColor: isDarkMode ? "#fff" : "#222",
+      },
     },
   };
 
-  const barConfig = {
-    data: barChartData,
-    xField: "priority",
-    yField: "count",
-    height: chartHeight,
-    label: {
-      position: "top", // Changed from 'middle' to 'top'
-      style: {
-        fill: "#000000", // Changed to black for better visibility
-        opacity: 0.8,
+  const barOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: isDarkMode ? "#23272f" : "#fff",
+        titleColor: isDarkMode ? "#fff" : "#222",
+        bodyColor: isDarkMode ? "#fff" : "#222",
       },
     },
-    interactions: [{ type: "active-region" }],
+    scales: {
+      x: {
+        ticks: {
+          color: isDarkMode ? "#fff" : "#222",
+          font: { size: 14 },
+        },
+        grid: {
+          color: isDarkMode ? "#444" : "#eee",
+        },
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: isDarkMode ? "#fff" : "#222",
+          font: { size: 14 },
+        },
+        grid: {
+          color: isDarkMode ? "#444" : "#eee",
+        },
+      },
+    },
   };
 
   return (
-    <>
-      <Row gutter={[16]}>
-        <Col span={12}>
-          <Card title="Task Distribution" style={{ height: chartHeight + 80 }}>
-            {hasPieData ? (
-              <Pie {...pieConfig} />
-            ) : (
-              <Empty description="No Data" />
-            )}
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card
-            title="Task Priority Levels"
-            style={{ height: chartHeight + 80 }}
-          >
-            {hasBarData ? (
-              <Column {...barConfig} />
-            ) : (
-              <Empty description="No Data" />
-            )}
-          </Card>
-        </Col>
-      </Row>
-    </>
+    <Row gutter={[16, 16]}>
+      <Col xs={24} md={12}>
+        <Card
+          title="Task Distribution"
+          style={{
+            minHeight: 350,
+            height: 400,
+            background: isDarkMode ? "rgb(15 26 47)" : undefined,
+            color: isDarkMode ? "#fff" : undefined,
+          }}
+        >
+          {pieData.datasets && pieData.datasets[0].data.some((v) => v > 0) ? (
+            <Pie data={pieData} options={{ ...pieOptions, maintainAspectRatio: false }} height={300} />
+          ) : (
+            <Empty description="No Data" />
+          )}
+        </Card>
+      </Col>
+      <Col xs={24} md={12}>
+        <Card
+          title="Task Priority Levels"
+          style={{
+            minHeight: 350,
+            height: 400,
+            background: isDarkMode ? "rgb(15 26 47)" : undefined,
+            color: isDarkMode ? "#fff" : undefined,
+          }}
+        >
+          {barData.datasets && barData.datasets[0].data.some((v) => v > 0) ? (
+            <Bar data={barData} options={{ ...barOptions, maintainAspectRatio: false }} height={300} />
+          ) : (
+            <Empty description="No Data" />
+          )}
+        </Card>
+      </Col>
+    </Row>
   );
 };
 
