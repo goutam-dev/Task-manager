@@ -1,12 +1,27 @@
-import { Alert, Button, Form, Grid, Input, theme, Typography } from "antd";
+import {
+  Alert,
+  Button,
+  Form,
+  Grid,
+  Input,
+  theme,
+  Typography,
+  Switch,
+} from "antd";
 
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  LockOutlined,
+  MailOutlined,
+  MoonOutlined,
+  SunOutlined,
+} from "@ant-design/icons";
 import { sharedStyles } from "./sharedStyles";
 import { useContext, useState } from "react";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { ThemeContext } from "../context/ThemeContext";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
@@ -19,6 +34,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const { updateUser } = useContext(UserContext);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
@@ -59,6 +75,14 @@ export default function Login() {
     <section style={styles.section}>
       <div style={styles.container}>
         <div style={styles.header}>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}>
+            <Switch
+              checked={isDarkMode}
+              onChange={toggleTheme}
+              checkedChildren={<MoonOutlined />}
+              unCheckedChildren={<SunOutlined />}
+            />
+          </div>
           <svg
             width="25"
             height="24"

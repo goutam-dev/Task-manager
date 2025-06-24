@@ -10,6 +10,7 @@ import {
   Upload,
   message,
   Alert,
+  Switch,
 } from "antd";
 
 import {
@@ -18,12 +19,15 @@ import {
   UserOutlined,
   KeyOutlined,
   UploadOutlined,
+  MoonOutlined,
+  SunOutlined,
 } from "@ant-design/icons";
 import { sharedStyles } from "./sharedStyles";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../context/ThemeContext";
 
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
@@ -34,6 +38,8 @@ export default function SignUp() {
   const screens = useBreakpoint();
   const [error, setError] = useState("");
   const { updateUser } = useContext(UserContext);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
@@ -104,6 +110,14 @@ export default function SignUp() {
     <section style={styles.section}>
       <div style={styles.container}>
         <div style={styles.header}>
+          <div style={{ position: "absolute", top: 0, right: 0 }}>
+            <Switch
+              checked={isDarkMode}
+              onChange={toggleTheme}
+              checkedChildren={<MoonOutlined />}
+              unCheckedChildren={<SunOutlined />}
+            />
+          </div>
           <svg
             width="33"
             height="32"

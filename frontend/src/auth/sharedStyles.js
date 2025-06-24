@@ -14,6 +14,7 @@ export const sharedStyles = (token, screens) => ({
   header: {
     marginBottom: token.marginXL,
     textAlign: "center",
+    position: "relative",
   },
   section: {
     backgroundColor: token.colorBgContainer,
