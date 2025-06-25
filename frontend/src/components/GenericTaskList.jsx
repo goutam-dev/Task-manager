@@ -13,6 +13,7 @@ import {
   Typography,
   Input,
   Select,
+  Grid,
 } from "antd";
 import {
   DownloadOutlined,
@@ -25,9 +26,11 @@ import Loading from "../components/Loading";
 import { useTasks } from "../hooks/useTasks";
 import { debounce } from "lodash";
 import TaskProgress from "./TaskProgress";
+import { ThemeContext } from "../context/ThemeContext";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
+const { useBreakpoint } = Grid;
 
 export default function GenericTaskList({
   title,
@@ -45,6 +48,8 @@ export default function GenericTaskList({
     searchQuery,
     sortOrder
   );
+  const { isDarkMode } = React.useContext(ThemeContext);
+  const screens = useBreakpoint();
 
   const handleSearch = useCallback(
     debounce((value) => {
@@ -96,9 +101,12 @@ export default function GenericTaskList({
       <Space
         style={{
           width: "100%",
-          justifyContent: "space-between",
+          justifyContent: screens.xs ? "flex-start" : "space-between",
+          flexDirection: screens.xs ? "column" : "row",
+          gap: screens.xs ? 12 : 0,
           marginBottom: 24,
         }}
+        direction={screens.xs ? "vertical" : "horizontal"}
       >
         <Title level={2} style={{ margin: 0 }}>
           {title}
@@ -139,14 +147,28 @@ export default function GenericTaskList({
         </Col>
       </Row>
 
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          overflowX: screens.xs ? "auto" : "visible",
+          width: "100%",
+          paddingLeft: screens.xs ? 0 : 0, // Remove left padding to ensure first tab is visible
+        }}
+      >
         <Tabs
           activeKey={filterStatus}
           onChange={setFilterStatus}
           items={tabs}
-          centered
+          centered={!screens.xs}
           size="large"
-          tabBarStyle={{ overflow: "visible", whiteSpace: "nowrap" }}
+          tabBarStyle={{
+            overflow: screens.xs ? "auto" : "visible",
+            whiteSpace: screens.xs ? "nowrap" : "normal",
+            minWidth: screens.xs ? undefined : undefined, // Remove minWidth to allow all tabs to fit
+            width: screens.xs ? "max-content" : undefined,
+            margin: 0,
+          }}
         />
       </div>
 
@@ -161,13 +183,24 @@ export default function GenericTaskList({
           </Text>
         </div>
       ) : (
-        <Row gutter={[16, 16]}>
+        <Row gutter={[16, 16]} wrap style={{ width: "100%" }}>
           {allTasks.map((task) => (
-            <Col key={task._id} xs={24} sm={12} md={8} lg={6}>
+            <Col
+              key={task._id}
+              xs={24}
+              sm={12}
+              md={8}
+              lg={6}
+              style={{ minWidth: 0 }}
+            >
               <Card
                 hoverable
                 onClick={() => onCardClick(task)}
-                style={{ height: "100%" }}
+                style={{
+                  height: "100%",
+                  background: isDarkMode ? "rgb(15 26 47)" : "#fff",
+                  minWidth: 0,
+                }}
                 title={
                   <Space>
                     <Text ellipsis style={{ maxWidth: 100 }} strong>
