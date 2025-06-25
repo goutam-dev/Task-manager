@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "./DashboardLayout";
 import Loading from "./Loading";
 import {
@@ -31,10 +31,12 @@ import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../context/ThemeContext";
 
 const { Title, Text, Paragraph } = Typography;
 
 function UserDetailView({ user, onBack }) {
+  const { isDarkMode } = useContext(ThemeContext);
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -129,6 +131,8 @@ function UserDetailView({ user, onBack }) {
           style={{
             borderRadius: 16,
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+            background: isDarkMode ? "rgb(15 26 47)" : undefined,
+            color: isDarkMode ? "#fff" : undefined,
           }}
         >
           <Row gutter={[24, 24]} align="middle">
@@ -240,6 +244,8 @@ function UserDetailView({ user, onBack }) {
           style={{
             borderRadius: 16,
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+            background: isDarkMode ? "rgb(15 26 47)" : undefined,
+            color: isDarkMode ? "#fff" : undefined,
           }}
         >
           {userDetails?.tasks?.length > 0 ? (
@@ -252,6 +258,8 @@ function UserDetailView({ user, onBack }) {
                     borderRadius: 12,
                     padding: 16,
                     marginBottom: 16,
+                    background: isDarkMode ? "rgb(15 26 47)" : undefined,
+                    color: isDarkMode ? "#fff" : undefined,
                   }}
                 >
                   <div

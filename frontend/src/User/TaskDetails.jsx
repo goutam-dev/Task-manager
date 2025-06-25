@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
@@ -28,10 +29,12 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import DashboardLayout from "../components/DashboardLayout";
+import { ThemeContext } from "../context/ThemeContext";
 
 const { Title, Text, Paragraph } = Typography;
 
 function TaskDetails() {
+  const { isDarkMode } = useContext(ThemeContext);
   const { id } = useParams();
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -142,7 +145,7 @@ function TaskDetails() {
       <div
         style={{
           padding: "24px",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: isDarkMode ? "#23272f" : "#f5f5f5",
           minHeight: "100vh",
         }}
       >
@@ -151,14 +154,18 @@ function TaskDetails() {
             maxWidth: 1200,
             margin: "0 auto",
             borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            boxShadow: isDarkMode
+              ? "0 6px 32px 0 rgba(0,0,0,0.45), 0 1.5px 6px 0 rgba(0,0,0,0.25)"
+              : "0 4px 24px 0 rgba(0,0,0,0.18), 0 1.5px 6px 0 rgba(0,0,0,0.10)",
+            background: isDarkMode ? "rgb(15 26 47)" : "#fff",
+            color: isDarkMode ? "#fff" : undefined,
           }}
         >
           {/* Header Section */}
           <div style={{ marginBottom: "24px" }}>
             <Row justify="space-between" align="top">
               <Col span={18}>
-                <Title level={2} style={{ margin: 0, color: "#262626" }}>
+                <Title level={2} style={{ margin: 0, color: isDarkMode ? "#fff" : "#262626" }}>
                   {task.title}
                 </Title>
               </Col>
@@ -177,6 +184,8 @@ function TaskDetails() {
                         padding: "4px 12px",
                         fontSize: "12px",
                         fontWeight: "500",
+                        color: isDarkMode ? "#fff" : undefined,
+                        background: isDarkMode && task.status !== "Completed" ? "#23272f" : undefined,
                       }}
                     >
                       {getStatusIcon(task.status)} {task.status}
@@ -189,11 +198,11 @@ function TaskDetails() {
 
           {/* Description */}
           <div style={{ marginBottom: "32px" }}>
-            <Title level={5} style={{ color: "#8c8c8c", marginBottom: "8px" }}>
+            <Title level={5} style={{ color: isDarkMode ? "#bbb" : "#8c8c8c", marginBottom: "8px" }}>
               Description
             </Title>
             <Paragraph
-              style={{ fontSize: "14px", lineHeight: "1.6", color: "#595959" }}
+              style={{ fontSize: "14px", lineHeight: "1.6", color: isDarkMode ? "#eee" : "#595959" }}
             >
               {task.description}
             </Paragraph>
@@ -207,7 +216,7 @@ function TaskDetails() {
                   strong
                   style={{
                     fontSize: "12px",
-                    color: "#8c8c8c",
+                    color: isDarkMode ? "#bbb" : "#8c8c8c",
                     textTransform: "uppercase",
                   }}
                 >
@@ -220,6 +229,8 @@ function TaskDetails() {
                       borderRadius: "4px",
                       fontWeight: "600",
                       fontSize: "12px",
+                      color: isDarkMode ? "#fff" : "#262626",
+                      background: isDarkMode ? "#23272f" : undefined,
                     }}
                   >
                     {task.priority}
@@ -234,7 +245,7 @@ function TaskDetails() {
                   strong
                   style={{
                     fontSize: "12px",
-                    color: "#8c8c8c",
+                    color: isDarkMode ? "#bbb" : "#8c8c8c",
                     textTransform: "uppercase",
                   }}
                 >
@@ -263,7 +274,7 @@ function TaskDetails() {
                   strong
                   style={{
                     fontSize: "12px",
-                    color: "#8c8c8c",
+                    color: isDarkMode ? "#bbb" : "#8c8c8c",
                     textTransform: "uppercase",
                   }}
                 >
@@ -329,7 +340,7 @@ function TaskDetails() {
           </div>
 
           <div style={{ marginBottom: "32px" }}>
-            <Title level={4} style={{ marginBottom: "16px", color: "#262626" }}>
+            <Title level={4} style={{ marginBottom: "16px", color: isDarkMode ? "#fff" : "#262626" }}>
               Todo Checklist
             </Title>
             <List
@@ -341,6 +352,8 @@ function TaskDetails() {
                     borderBottom:
                       index === (task.todoChecklist?.length || 0) - 1
                         ? "none"
+                        : isDarkMode
+                        ? "1px solid #333"
                         : "1px solid #f0f0f0",
                   }}
                 >
@@ -355,7 +368,7 @@ function TaskDetails() {
                         textDecoration: item.completed
                           ? "line-through"
                           : "none",
-                        color: item.completed ? "#8c8c8c" : "#262626",
+                        color: item.completed ? (isDarkMode ? "#bbb" : "#8c8c8c") : (isDarkMode ? "#fff" : "#262626"),
                         fontSize: "14px",
                       }}
                     >
@@ -372,7 +385,7 @@ function TaskDetails() {
             <div>
               <Title
                 level={4}
-                style={{ marginBottom: "16px", color: "#262626" }}
+                style={{ marginBottom: "16px", color: isDarkMode ? "#fff" : "#262626" }}
               >
                 Attachments
               </Title>
@@ -389,14 +402,14 @@ function TaskDetails() {
                       justifyContent: "flex-start",
                       padding: "8px 12px",
                       height: "auto",
-                      border: "1px solid #d9d9d9",
+                      border: isDarkMode ? "1px solid #333" : "1px solid #d9d9d9",
                       borderRadius: "6px",
-                      backgroundColor: "#fafafa",
+                      backgroundColor: isDarkMode ? "#23272f" : "#fafafa",
                       width: "100%",
                       textAlign: "left",
                     }}
                   >
-                    <Text style={{ fontSize: "14px", color: "#1890ff" }}>
+                    <Text style={{ fontSize: "14px", color: isDarkMode ? "#91caff" : "#1890ff" }}>
                       {String(index + 1).padStart(2, "0")} {attachment}
                     </Text>
                   </Button>

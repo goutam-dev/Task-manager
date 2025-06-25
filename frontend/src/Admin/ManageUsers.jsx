@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import Loading from "../components/Loading";
 import UserDetailView from "../components/UserDetailView"; // New component we'll create
@@ -17,11 +17,13 @@ import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
 import { debounce } from "lodash";
+import { ThemeContext } from "../context/ThemeContext";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
 
 function ManageUsers() {
+  const { isDarkMode } = useContext(ThemeContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -157,6 +159,8 @@ function ManageUsers() {
                     borderRadius: 16,
                     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
                     cursor: "pointer",
+                    background: isDarkMode ? "rgb(15 26 47)" : undefined,
+                    color: isDarkMode ? "#fff" : undefined,
                   }}
                   styles={{ body: { padding: 24 } }}
                 >

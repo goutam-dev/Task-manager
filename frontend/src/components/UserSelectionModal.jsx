@@ -1,7 +1,17 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useContext } from "react";
+import { ThemeContext } from "../context/ThemeContext";
 import { API_PATHS } from "../utils/apiPaths";
 import axiosInstance from "../utils/axiosConfig";
-import { List, message, Modal, Spin, Avatar, Space, Checkbox, Input } from "antd";
+import {
+  List,
+  message,
+  Modal,
+  Spin,
+  Avatar,
+  Space,
+  Checkbox,
+  Input,
+} from "antd";
 import { UserOutlined, SearchOutlined } from "@ant-design/icons";
 import { debounce } from "lodash";
 
@@ -9,7 +19,7 @@ const { Search } = Input;
 
 const fetchUsers = async (search = "") => {
   const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS, {
-    params: { search }
+    params: { search },
   });
   return response.data;
 };
@@ -19,11 +29,19 @@ export default function UserSelectionModal({
   onCancel,
   onSave,
   selectedUsers,
-  setSelectedUsers,
+  setSelectedUsers, // keep for compatibility, but will not use for local state
 }) {
+  const { isDarkMode } = useContext(ThemeContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // Local selection state
+  const [localSelected, setLocalSelected] = useState([]);
+
+  // Sync local selection with parent when modal opens
+  useEffect(() => {
+    if (visible) setLocalSelected(selectedUsers || []);
+  }, [visible, selectedUsers]);
 
   const loadUsers = async (search) => {
     setLoading(true);
@@ -54,16 +72,16 @@ export default function UserSelectionModal({
   }, [visible, searchQuery, debouncedLoadUsers]);
 
   const handleUserToggle = (user) => {
-    const isSelected = selectedUsers.some((u) => u._id === user._id);
+    const isSelected = localSelected.some((u) => u._id === user._id);
     if (isSelected) {
-      setSelectedUsers(selectedUsers.filter((u) => u._id !== user._id));
+      setLocalSelected(localSelected.filter((u) => u._id !== user._id));
     } else {
-      setSelectedUsers([...selectedUsers, user]);
+      setLocalSelected([...localSelected, user]);
     }
   };
 
   const handleSave = () => {
-    onSave(selectedUsers);
+    onSave(localSelected);
   };
 
   const handleSearch = (value) => {
@@ -83,6 +101,12 @@ export default function UserSelectionModal({
         body: {
           maxHeight: "60vh",
           overflowY: "auto",
+          background: isDarkMode ? "rgb(15 26 47)" : "#fff",
+          color: isDarkMode ? "#fff" : undefined,
+        },
+        header: {
+          background: isDarkMode ? "rgb(15 26 47)" : undefined,
+          color: isDarkMode ? "#fff" : undefined,
         },
       }}
     >
@@ -94,9 +118,12 @@ export default function UserSelectionModal({
           size="large"
           onChange={(e) => handleSearch(e.target.value)}
           value={searchQuery}
+          style={{
+            background: isDarkMode ? "#1a2236" : undefined,
+            color: isDarkMode ? "#fff" : undefined,
+          }}
         />
       </div>
-      
       {loading ? (
         <div style={{ textAlign: "center", padding: "40px" }}>
           <Spin size="large" />
@@ -109,18 +136,27 @@ export default function UserSelectionModal({
         <List
           dataSource={users}
           renderItem={(user) => {
-            const isSelected = selectedUsers.some((u) => u._id === user._id);
+            const isSelected = localSelected.some((u) => u._id === user._id);
             return (
               <List.Item
                 style={{
                   padding: "12px 16px",
                   cursor: "pointer",
-                  backgroundColor: isSelected ? "#f6ffed" : "transparent",
+                  backgroundColor: isSelected
+                    ? isDarkMode
+                      ? "#22304a"
+                      : "#f6ffed"
+                    : isDarkMode
+                    ? "#1a2236"
+                    : "transparent",
                   border: isSelected
-                    ? "1px solid #b7eb8f"
+                    ? isDarkMode
+                      ? "1px solid #3e5a8c"
+                      : "1px solid #b7eb8f"
                     : "1px solid transparent",
                   borderRadius: "8px",
                   marginBottom: "8px",
+                  color: isDarkMode ? "#fff" : undefined,
                 }}
                 onClick={() => handleUserToggle(user)}
               >
@@ -130,6 +166,7 @@ export default function UserSelectionModal({
                       src={user.profileImageUrl}
                       icon={<UserOutlined />}
                       size={40}
+                      style={{ background: isDarkMode ? "#2a3550" : undefined }}
                     />
                   }
                   title={
@@ -137,13 +174,18 @@ export default function UserSelectionModal({
                       <Checkbox
                         checked={isSelected}
                         onChange={() => handleUserToggle(user)}
+                        style={{
+                          accentColor: isDarkMode ? "#1677ff" : undefined,
+                        }}
                       />
                       <span style={{ fontWeight: 500 }}>{user.name}</span>
                     </Space>
                   }
                   description={
                     <Space direction="vertical" size={4}>
-                      <span style={{ color: "#666" }}>{user.email}</span>
+                      <span style={{ color: isDarkMode ? "#b0b8c9" : "#666" }}>
+                        {user.email}
+                      </span>
                       <Space size={16}>
                         <span>Pending: {user.pendingTasks}</span>
                         <span>In Progress: {user.inProgressTasks}</span>
