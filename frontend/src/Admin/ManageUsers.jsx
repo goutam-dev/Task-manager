@@ -22,6 +22,9 @@ import { ThemeContext } from "../context/ThemeContext";
 const { Title, Text } = Typography;
 const { Search } = Input;
 
+// Helper to ensure HTTPS for image URLs
+const getSecureImageUrl = (url) => url?.replace(/^http:\/\//, "https://");
+
 function ManageUsers() {
   const { isDarkMode } = useContext(ThemeContext);
   const [users, setUsers] = useState([]);
@@ -165,7 +168,7 @@ function ManageUsers() {
                   styles={{ body: { padding: 24 } }}
                 >
                   <div style={{ textAlign: "center", marginBottom: 16 }}>
-                    <Avatar size={72} src={user.profileImageUrl} />
+                    <Avatar size={72} src={getSecureImageUrl(user.profileImageUrl)} />
                     <Title level={4} style={{ marginTop: 12 }}>
                       {user.name}
                     </Title>

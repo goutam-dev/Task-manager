@@ -10,6 +10,9 @@ const { Sider, Content, Footer } = Layout;
 const { useBreakpoint } = Grid;
 const { Text } = Typography;
 
+// Helper to ensure HTTPS for image URLs
+const getSecureImageUrl = (url) => url?.replace(/^http:\/\//, "https://");
+
 export default function DashboardLayout({
   defaultActiveKey = "dashboard",
   children,
@@ -63,7 +66,7 @@ export default function DashboardLayout({
         style={{ background: isDarkMode ? undefined : "#001529" }} // Use AntD default dark blue in both modes
       >
         <div style={{ padding: 16, textAlign: "center" }}>
-          <Avatar size={48} src={user.profileImageUrl} />
+          <Avatar size={48} src={getSecureImageUrl(user.profileImageUrl)} />
           {!collapsed && (
             <div style={{ marginTop: 8 }}>
               <Text

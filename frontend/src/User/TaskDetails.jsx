@@ -299,7 +299,7 @@ function TaskDetails() {
                         title={`${user.name} (${user.email})`}
                       >
                         <Avatar
-                          src={user.profileImageUrl}
+                          src={getSecureImageUrl(user.profileImageUrl)}
                           icon={<UserOutlined />}
                           style={{ cursor: "pointer" }}
                         >
@@ -422,5 +422,8 @@ function TaskDetails() {
     </DashboardLayout>
   );
 }
+
+// Helper to ensure HTTPS for image URLs
+const getSecureImageUrl = (url) => url?.replace(/^http:\/\//, "https://");
 
 export default TaskDetails;

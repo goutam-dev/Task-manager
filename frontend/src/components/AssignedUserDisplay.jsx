@@ -1,6 +1,9 @@
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Space } from "antd";
 
+// Helper to ensure HTTPS for image URLs
+const getSecureImageUrl = (url) => url?.replace(/^http:\/\//, "https://");
+
 export default function AssignedUsersDisplay({ users, onClick }) {
   const maxVisible = 3;
   const visibleUsers = users.slice(0, maxVisible);
@@ -36,7 +39,7 @@ export default function AssignedUsersDisplay({ users, onClick }) {
             {visibleUsers.map((user) => (
               <Avatar
                 key={user._id}
-                src={user.profileImageUrl}
+                src={getSecureImageUrl(user.profileImageUrl)}
                 icon={<UserOutlined />}
                 size={32}
                 title={user.name}

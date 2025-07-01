@@ -32,6 +32,9 @@ const { Title, Text } = Typography;
 const { Search } = Input;
 const { useBreakpoint } = Grid;
 
+// Helper to ensure HTTPS for image URLs
+const getSecureImageUrl = (url) => url?.replace(/^http:\/\//, "https://");
+
 export default function GenericTaskList({
   title,
   defaultActiveKey,
@@ -251,7 +254,7 @@ export default function GenericTaskList({
                     <Space>
                       {task.assignedTo.map((user) => (
                         <Tooltip key={user._id} title={user.name}>
-                          <Avatar src={user.profileImageUrl} />
+                          <Avatar src={getSecureImageUrl(user.profileImageUrl)} />
                         </Tooltip>
                       ))}
                     </Space>

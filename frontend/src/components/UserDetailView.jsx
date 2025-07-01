@@ -107,6 +107,9 @@ function UserDetailView({ user, onBack }) {
     }
   };
 
+  // Helper to ensure HTTPS for image URLs
+  const getSecureImageUrl = (url) => url?.replace(/^http:\/\//, "https://");
+
   if (loading) {
     return <Loading />;
   }
@@ -139,7 +142,7 @@ function UserDetailView({ user, onBack }) {
             <Col xs={24} sm={8} md={6} style={{ textAlign: "center" }}>
               <Avatar
                 size={120}
-                src={user.profileImageUrl}
+                src={getSecureImageUrl(user.profileImageUrl)}
                 icon={<UserOutlined />}
               />
             </Col>

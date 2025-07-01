@@ -17,6 +17,9 @@ import { debounce } from "lodash";
 
 const { Search } = Input;
 
+// Helper to ensure HTTPS for image URLs
+const getSecureImageUrl = (url) => url?.replace(/^http:\/\//, "https://");
+
 const fetchUsers = async (search = "") => {
   const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS, {
     params: { search },
@@ -163,7 +166,7 @@ export default function UserSelectionModal({
                 <List.Item.Meta
                   avatar={
                     <Avatar
-                      src={user.profileImageUrl}
+                      src={getSecureImageUrl(user.profileImageUrl)}
                       icon={<UserOutlined />}
                       size={40}
                       style={{ background: isDarkMode ? "#2a3550" : undefined }}
