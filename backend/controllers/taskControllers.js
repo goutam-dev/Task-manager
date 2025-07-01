@@ -422,6 +422,11 @@ const getUserDashboardData = async (req, res) => {
       status: { $ne: "Completed" },
       dueDate: { $lt: new Date() },
     });
+    const inProgressTasks = await Task.countDocuments({
+      assignedTo: userId,
+      status: "In Progress",
+    });
+
     // Task distribution by status
     const taskStatuses = ["Pending", "In Progress", "Completed"];
     const taskDistributionRaw = await Task.aggregate([
@@ -461,6 +466,7 @@ const getUserDashboardData = async (req, res) => {
         pendingTasks,
         completedTasks,
         overdueTasks,
+        inProgressTasks,
       },
       charts: {
         taskDistribution,
