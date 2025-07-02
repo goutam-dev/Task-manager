@@ -74,8 +74,8 @@ const getTasks = async (req, res) => {
       overdueCount,
     ] = await Promise.all([
       Task.countDocuments(baseCountFilter),
-      Task.countDocuments({ ...baseCountFilter, status: "Pending" }),
-      Task.countDocuments({ ...baseCountFilter, status: "In Progress" }),
+      Task.countDocuments({ ...baseCountFilter, status: "Pending", dueDate: { $gte: now } }),
+      Task.countDocuments({ ...baseCountFilter, status: "In Progress", dueDate: { $gte: now } }),
       Task.countDocuments({ ...baseCountFilter, status: "Completed" }),
       Task.countDocuments({
         ...baseCountFilter,
@@ -331,20 +331,24 @@ const getDashboardData = async (req, res) => {
     const totalTasks = await Task.countDocuments();
     const pendingTasks = await Task.countDocuments({
       status: "Pending",
+      dueDate: { $gte: new Date() },
     });
     const completedTasks = await Task.countDocuments({
       status: "Completed",
     });
     const overdueTasks = await Task.countDocuments({
-      status: { $ne: "Completed" }, // Fixed: changed $net to $ne
+      status: { $ne: "Completed" },
       dueDate: { $lt: new Date() },
     });
     const inProgressTasks = await Task.countDocuments({
       status: "In Progress",
+      dueDate: { $gte: new Date() },
     });
 
     // Ensure all possible statuses are included
-    const taskStatuses = ["Pending", "In Progress", "Completed"];
+    const now = new Date();
+    const taskStatuses = ["Pending", "In Progress", "Completed", "Overdue"];
+    // Get raw counts by status
     const taskDistributionRaw = await Task.aggregate([
       {
         $group: {
@@ -353,10 +357,15 @@ const getDashboardData = async (req, res) => {
         },
       },
     ]);
+    // Calculate overdue count
+    const overdueCount = await Task.countDocuments({ status: { $ne: "Completed" }, dueDate: { $lt: now } });
     const taskDistribution = taskStatuses.reduce((acc, status) => {
-      const formattedKey = status.replace(/\s+/g, "");
-      acc[formattedKey] =
-        taskDistributionRaw.find((item) => item._id === status)?.count || 0;
+      if (status === "Overdue") {
+        acc[status.replace(/\s+/g, "")] = overdueCount;
+      } else {
+        acc[status.replace(/\s+/g, "")] =
+          taskDistributionRaw.find((item) => item._id === status)?.count || 0;
+      }
       return acc;
     }, {});
     taskDistribution["All"] = totalTasks; // Add total count to taskDistribution
@@ -412,6 +421,7 @@ const getUserDashboardData = async (req, res) => {
     const pendingTasks = await Task.countDocuments({
       assignedTo: userId,
       status: "Pending",
+      dueDate: { $gte: new Date() },
     });
     const completedTasks = await Task.countDocuments({
       assignedTo: userId,
@@ -425,19 +435,25 @@ const getUserDashboardData = async (req, res) => {
     const inProgressTasks = await Task.countDocuments({
       assignedTo: userId,
       status: "In Progress",
+      dueDate: { $gte: new Date() },
     });
 
     // Task distribution by status
-    const taskStatuses = ["Pending", "In Progress", "Completed"];
+    const now = new Date();
+    const taskStatuses = ["Pending", "In Progress", "Completed", "Overdue"];
     const taskDistributionRaw = await Task.aggregate([
       { $match: { assignedTo: userId } },
       { $group: { _id: "$status", count: { $sum: 1 } } },
     ]);
-
+    // Calculate overdue count for this user
+    const overdueCount = await Task.countDocuments({ assignedTo: userId, status: { $ne: "Completed" }, dueDate: { $lt: now } });
     const taskDistribution = taskStatuses.reduce((acc, status) => {
-      const formattedKey = status.replace(/\s+/g, "");
-      acc[formattedKey] =
-        taskDistributionRaw.find((item) => item._id === status)?.count || 0;
+      if (status === "Overdue") {
+        acc[status.replace(/\s+/g, "")] = overdueCount;
+      } else {
+        acc[status.replace(/\s+/g, "")] =
+          taskDistributionRaw.find((item) => item._id === status)?.count || 0;
+      }
       return acc;
     }, {});
     taskDistribution["All"] = totalTasks;

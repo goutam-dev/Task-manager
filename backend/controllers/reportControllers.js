@@ -25,12 +25,17 @@ const exportTasksReport = async (req, res) => {
   const assignedTo = task.assignedTo
     .map((user) => `${user.name} (${user.email})`)
     .join(", ");
+  // Determine overdue status for report
+  let status = task.status;
+  if (status !== "Completed" && new Date(task.dueDate) < new Date()) {
+    status = "Overdue";
+  }
   worksheet.addRow({
     _id: task._id,
     title: task.title,
     description: task.description,
     priority: task.priority,
-    status: task.status,
+    status: status,
     dueDate: task.dueDate.toISOString().split("T")[0],
     assignedTo: assignedTo || "Unassigned",
   });
@@ -73,7 +78,8 @@ const exportUsersReport = async (req, res) => {
                 taskCount: 0,
                 pendingTasks: 0,
                 inProgressTasks: 0,
-                completedTasks: 0
+                completedTasks: 0,
+                overdueTasks: 0
             };
         });
 
@@ -82,7 +88,10 @@ const exportUsersReport = async (req, res) => {
                 task.assignedTo.forEach((assignedUser) => {
                     if (userTaskMap[assignedUser._id]) {
                         userTaskMap[assignedUser._id].taskCount += 1;
-                        if (task.status === "Pending") {
+                        const isOverdue = task.status !== "Completed" && new Date(task.dueDate) < new Date();
+                        if (isOverdue) {
+                            userTaskMap[assignedUser._id].overdueTasks += 1;
+                        } else if (task.status === "Pending") {
                             userTaskMap[assignedUser._id].pendingTasks += 1;
                         } else if (task.status === "In Progress") {
                             userTaskMap[assignedUser._id].inProgressTasks += 1;
@@ -103,7 +112,8 @@ const exportUsersReport = async (req, res) => {
             { header: "Total Assigned Tasks", key: "taskCount", width: 20 },
             { header: "Pending Tasks", key: "pendingTasks", width: 20 },
             { header: "In Progress Tasks", key: "inProgressTasks", width: 20 },
-            { header: "Completed Tasks", key: "completedTasks", width: 20 }
+            { header: "Completed Tasks", key: "completedTasks", width: 20 },
+            { header: "Overdue Tasks", key: "overdueTasks", width: 20 }
         ];
 
         Object.values(userTaskMap).forEach((user) => {

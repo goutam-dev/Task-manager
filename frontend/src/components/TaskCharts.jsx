@@ -16,18 +16,20 @@ const TaskCharts = ({ data }) => {
     const taskPriorityLevels = data?.taskPriorityLevels || {};
 
     setPieData({
-      labels: ["Pending", "In Progress", "Completed"],
+      labels: ["Pending", "In Progress", "Completed", "Overdue"],
       datasets: [
         {
           data: [
             taskDistribution.Pending || 0,
             taskDistribution.InProgress || 0,
             taskDistribution.Completed || 0,
+            taskDistribution.Overdue || 0,
           ],
           backgroundColor: [
             isDarkMode ? "#f59e42" : "#f59e42",
             isDarkMode ? "#1677ff" : "#1677ff",
             isDarkMode ? "#22c55e" : "#22c55e",
+            isDarkMode ? "#ff4d4f" : "#ff4d4f", // Red for Overdue
           ],
           borderColor: isDarkMode ? "#23272f" : "#fff",
           borderWidth: 2,

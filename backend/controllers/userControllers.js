@@ -24,13 +24,16 @@ const getUsers = async (req, res) => {
     // Add task counts to each user
     const usersWithTaskCounts = await Promise.all(
       users.map(async (user) => {
+        const now = new Date();
         const pendingTasks = await Task.countDocuments({
           assignedTo: user._id,
           status: "Pending",
+          dueDate: { $gte: now },
         });
         const inProgressTasks = await Task.countDocuments({
           assignedTo: user._id,
           status: "In Progress",
+          dueDate: { $gte: now },
         });
         const completedTasks = await Task.countDocuments({
           assignedTo: user._id,
@@ -39,7 +42,7 @@ const getUsers = async (req, res) => {
         const overdueTasks = await Task.countDocuments({
           assignedTo: user._id,
           status: { $ne: "Completed" },
-          dueDate: { $lt: new Date() },
+          dueDate: { $lt: now },
         });
 
         return {
@@ -138,8 +141,8 @@ const getUserDetails = async (req, res) => {
       overdueTasks,
     ] = await Promise.all([
       Task.countDocuments({ assignedTo: userId }),
-      Task.countDocuments({ assignedTo: userId, status: "Pending" }),
-      Task.countDocuments({ assignedTo: userId, status: "In Progress" }),
+      Task.countDocuments({ assignedTo: userId, status: "Pending", dueDate: { $gte: now } }),
+      Task.countDocuments({ assignedTo: userId, status: "In Progress", dueDate: { $gte: now } }),
       Task.countDocuments({ assignedTo: userId, status: "Completed" }),
       // Overdue: not completed, dueDate before now
       Task.countDocuments({
