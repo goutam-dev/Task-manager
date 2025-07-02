@@ -19,6 +19,7 @@
 ---
 
 ## 📑 Table of Contents
+
 - [🖼️ Preview](#️-preview)
 - [✨ Features](#-features)
 - [🗂️ Project Structure](#️-project-structure)
@@ -31,8 +32,9 @@
 ---
 
 ## 🖼️ Preview
+
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID" target="_blank">
+  <a href="https://drive.google.com/file/d/12bhg3GLBJ-DRK9DlqcjNAAm1SoG29ksP/view?usp=sharing" target="_blank">
     <img src="https://res.cloudinary.com/damlr67d9/image/upload/v1751469148/admin-dashboard-dark_ssj0ag.png" alt="Task Manager Demo Video" width="480" />
     <br>
     <i>Watch Demo Video</i>
@@ -86,6 +88,7 @@ Task-manager/
 ---
 
 ## 🔧 Backend Details
+
 - `index.js`: Sets up Express, connects to MongoDB, configures CORS, JSON parsing, static uploads, and API routes.
 - **config/:**
   - `db.js`: Connects to MongoDB using Mongoose
@@ -110,6 +113,7 @@ Task-manager/
 ---
 
 ## 🎨 Frontend Details
+
 - **App.jsx:** Main router, role-based route protection, redirects, 404 handling
 - **Admin/:**
   - `Dashboard.jsx`: Admin dashboard (stats, charts, recent tasks)
@@ -145,6 +149,7 @@ Task-manager/
 ## ⚡ Quick Start
 
 ### 1. Clone & Install
+
 ```bash
 git clone https://github.com/goutam-dev/Task-manager.git
 cd Task-manager
@@ -153,6 +158,7 @@ cd ../frontend && npm install
 ```
 
 ### 2. Environment Setup
+
 - **Backend**: Create `backend/.env` with:
   ```env
   MONGO_URI=your_mongodb_uri
@@ -168,6 +174,7 @@ cd ../frontend && npm install
   ```
 
 ### 3. Run the App
+
 - **Backend**:
   ```bash
   cd backend
@@ -188,6 +195,7 @@ cd ../frontend && npm install
 <summary><b>Click to expand</b></summary>
 
 ### Auth
+
 - `POST   /api/auth/register` — Register user/admin
 - `POST   /api/auth/login` — Login
 - `GET    /api/auth/profile` — Get profile (auth)
@@ -195,6 +203,7 @@ cd ../frontend && npm install
 - `POST   /api/auth/upload-image` — Upload profile image
 
 ### Tasks
+
 - `GET    /api/tasks/` — List tasks (admin: all, user: assigned)
 - `POST   /api/tasks/` — Create task (admin)
 - `GET    /api/tasks/:id` — Get task by ID
@@ -206,11 +215,13 @@ cd ../frontend && npm install
 - `GET    /api/tasks/user-dashboard-data` — User dashboard stats
 
 ### Users
+
 - `GET    /api/users/` — List users (admin)
 - `GET    /api/users/:id` — Get user
 - `GET    /api/users/details/:id` — User details + tasks (admin)
 
 ### Reports
+
 - `GET    /api/reports/export/tasks` — Export all tasks (Excel)
 - `GET    /api/reports/export/users` — Export user-task report (Excel)
 
@@ -230,5 +241,3 @@ cd ../frontend && npm install
 </div>
 
 ---
-
-
