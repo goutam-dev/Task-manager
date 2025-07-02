@@ -3,7 +3,6 @@ const router = express.Router();
 
 
 
-
 // Import controller functions
 const {
   registerUser,
@@ -14,7 +13,7 @@ const {
 
 // Import middleware
 const { protect } = require("../middlewears/authMiddlewears");
-const upload = require("../middlewears/uploadMiddlewears");
+const { upload, uploadToCloudinary } = require("../middlewears/uploadMiddlewears");
 
 // Auth Routes
 router.post("/register", registerUser);    // Register User
@@ -22,15 +21,12 @@ router.post("/login", loginUser);          // Login User
 router.get("/profile", protect, getUserProfile);  // Get User Profile
 router.put("/profile", protect, updateUserProfile); // Update Profile
 
-router.post("/upload-image", upload.single("image"), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" }); // Fixed status code
+// Upload image to Cloudinary
+router.post("/upload-image", upload.single("image"), uploadToCloudinary, (req, res) => {
+    if (!req.file || !req.file.cloudinaryUrl) {
+        return res.status(400).json({ message: "No file uploaded" });
     }
-    
-    // Corrected string interpolation and URL format
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-    
-    res.status(200).json({ imageUrl });
+    res.status(200).json({ imageUrl: req.file.cloudinaryUrl });
 });
 
-module.exports = router;  
+module.exports = router;
