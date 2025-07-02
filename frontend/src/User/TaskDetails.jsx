@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
 import Loading from "../components/Loading";
@@ -36,6 +36,7 @@ const { Title, Text, Paragraph } = Typography;
 function TaskDetails() {
   const { isDarkMode } = useContext(ThemeContext);
   const { id } = useParams();
+  const navigate = useNavigate();
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -161,6 +162,22 @@ function TaskDetails() {
             color: isDarkMode ? "#fff" : undefined,
           }}
         >
+          {/* Back Button */}
+          <Button
+            type="default"
+            onClick={() => navigate("/user/tasks")}
+            style={{
+              marginBottom: 24,
+              background: isDarkMode ? "#23272f" : "#fff",
+              color: isDarkMode ? "#fff" : "#262626",
+              border: isDarkMode ? "1px solid #333" : undefined,
+              boxShadow: "none",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ fontSize: 16, marginRight: 8 }}>&larr;</span> Back to My Tasks
+          </Button>
           {/* Header Section */}
           <div style={{ marginBottom: "24px" }}>
             <Row justify="space-between" align="top">

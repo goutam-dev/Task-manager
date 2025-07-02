@@ -84,30 +84,23 @@ export default function Login() {
             />
           </div>
           <svg
-            width="25"
-            height="24"
-            viewBox="0 0 25 24"
+            width="32"
+            height="32"
+            viewBox="0 0 32 32"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            style={{ marginBottom: 8 }}
           >
-            <rect x="0.464294" width="24" height="24" rx="4.8" fill="#1890FF" />
-            <path
-              d="M14.8643 3.6001H20.8643V9.6001H14.8643V3.6001Z"
-              fill="white"
-            />
-            <path
-              d="M10.0643 9.6001H14.8643V14.4001H10.0643V9.6001Z"
-              fill="white"
-            />
-            <path
-              d="M4.06427 13.2001H11.2643V20.4001H4.06427V13.2001Z"
-              fill="white"
-            />
+            <rect x="0" y="0" width="32" height="32" rx="6" fill="#1890FF" />
+            <rect x="8" y="10" width="16" height="2" rx="1" fill="white" />
+            <rect x="8" y="16" width="10" height="2" rx="1" fill="white" />
+            <rect x="8" y="22" width="6" height="2" rx="1" fill="white" />
+            <path d="M23 17.5l2 2 4-4" stroke="#52c41a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
           </svg>
 
           <Title style={styles.title}>Sign in</Title>
           <Text style={styles.text}>
-            Welcome back to AntBlocks UI! Please enter your details below to
+            Welcome back to Task Manager! Please enter your details below to
             sign in.
           </Text>
         </div>

@@ -119,19 +119,25 @@ export default function SignUp() {
             />
           </div>
           <svg
-            width="33"
-            height="32"
-            viewBox="0 0 33 32"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            style={{ marginBottom: 8 }}
           >
-            <rect x="0.125" width="32" height="32" rx="6.4" fill="#1890FF" />
+            <rect x="0" y="0" width="40" height="40" rx="8" fill="#1890FF" />
+            <rect x="10" y="14" width="20" height="3" rx="1.5" fill="white" />
+            <rect x="10" y="21" width="14" height="3" rx="1.5" fill="white" />
+            <rect x="10" y="28" width="8" height="3" rx="1.5" fill="white" />
             <path
-              d="M19.3251 4.80005H27.3251V12.8H19.3251V4.80005Z"
-              fill="white"
+              d="M29 22.5l2.5 2.5 5-5"
+              stroke="#52c41a"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
             />
-            <path d="M12.925 12.8H19.3251V19.2H12.925V12.8Z" fill="white" />
-            <path d="M4.92505 17.6H14.525V27.2001H4.92505V17.6Z" fill="white" />
           </svg>
 
           <Title style={styles.title}>Sign up</Title>
