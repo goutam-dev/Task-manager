@@ -20,6 +20,7 @@ import {
   FileTextOutlined,
   PaperClipOutlined,
   SearchOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import Loading from "../components/Loading";
@@ -46,6 +47,7 @@ export default function GenericTaskList({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [searchInputValue, setSearchInputValue] = React.useState("");
   const [sortOrder, setSortOrder] = React.useState("newest");
+  const [isSearching, setIsSearching] = React.useState(false);
   const { allTasks, statusSummary, loading } = useTasks(
     filterStatus,
     searchQuery,
@@ -56,6 +58,7 @@ export default function GenericTaskList({
 
   const handleSearch = useCallback(
     debounce((value) => {
+      setIsSearching(true);
       setSearchQuery(value);
     }, 300),
     []
@@ -68,12 +71,13 @@ export default function GenericTaskList({
   };
 
   React.useEffect(() => {
-    return () => {
-      handleSearch.cancel();
-    };
-  }, [handleSearch]);
+    if (searchQuery !== "") setIsSearching(true);
+    else setIsSearching(false);
+  }, [searchQuery]);
 
-  if (loading) return <Loading />;
+  React.useEffect(() => {
+    if (!loading) setIsSearching(false);
+  }, [loading]);
 
   const tabs = [
     { key: "All", label: <Badge count={statusSummary.all || 0}>All</Badge> },
@@ -127,14 +131,27 @@ export default function GenericTaskList({
 
       <Row gutter={[16, 16]} align="middle">
         <Col xs={24} sm={12} md={8}>
-          <Search
-            placeholder="Search tasks..."
-            allowClear
-            enterButton={<SearchOutlined />}
-            size="large"
-            onChange={handleSearchInputChange}
-            value={searchInputValue}
-          />
+          <div style={{ position: "relative" }}>
+            <Search
+              placeholder="Search tasks..."
+              allowClear
+              enterButton={<SearchOutlined />}
+              size="large"
+              onChange={handleSearchInputChange}
+              value={searchInputValue}
+              suffix={
+                isSearching ? (
+                  <LoadingOutlined
+                    style={{
+                      color: "#1890ff",
+                      fontSize: 20,
+                    }}
+                    spin
+                  />
+                ) : null
+              }
+            />
+          </div>
         </Col>
         <Col xs={24} sm={12} md={8}>
           <Select
@@ -175,7 +192,12 @@ export default function GenericTaskList({
         />
       </div>
 
-      {allTasks.length === 0 ? (
+      {loading && (
+        <div style={{ textAlign: "center", marginTop: 30 }}>
+          <Loading />
+        </div>
+      )}
+      {!loading && (allTasks.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: 50 }}>
           <Text type="secondary">
             {searchQuery
@@ -270,7 +292,7 @@ export default function GenericTaskList({
             </Col>
           ))}
         </Row>
-      )}
+      ))}
     </Space>
   );
 }

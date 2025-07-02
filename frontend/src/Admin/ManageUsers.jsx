@@ -13,7 +13,7 @@ import {
   message,
   Input,
 } from "antd";
-import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
+import { DownloadOutlined, SearchOutlined, LoadingOutlined } from "@ant-design/icons";
 import axiosInstance from "../utils/axiosConfig";
 import { API_PATHS } from "../utils/apiPaths";
 import { debounce } from "lodash";
@@ -32,8 +32,10 @@ function ManageUsers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDetailView, setShowDetailView] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
   const getUsers = async (search) => {
+    setIsSearching(true);
     setLoading(true);
     try {
       const response = await axiosInstance.get(API_PATHS.USERS.GET_ALL_USERS, {
@@ -47,6 +49,7 @@ function ManageUsers() {
       message.error("Failed to fetch team members");
     } finally {
       setLoading(false);
+      setIsSearching(false);
     }
   };
 
@@ -97,9 +100,7 @@ function ManageUsers() {
     setSelectedUser(null);
   };
 
-  if (loading) {
-    return <Loading />;
-  }
+  // Remove: if (loading) return <Loading />;
 
   // Show detailed view if a user is selected
   if (showDetailView && selectedUser) {
@@ -135,17 +136,25 @@ function ManageUsers() {
           </Button>
         </Space>
 
-        <Search
-          placeholder="Search team members by name or email..."
-          allowClear
-          enterButton={<SearchOutlined />}
-          size="large"
-          onChange={(e) => setSearchQuery(e.target.value)}
-          value={searchQuery}
-          style={{ maxWidth: 400 }}
-        />
+        <div style={{ position: "relative", maxWidth: 400 }}>
+          <Search
+            placeholder="Search team members by name or email..."
+            allowClear
+            enterButton={<SearchOutlined />}
+            size="large"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+            style={{ maxWidth: 400 }}
+            suffix={isSearching ? <LoadingOutlined style={{ color: "#1890ff", fontSize: 20 }} spin /> : null}
+          />
+        </div>
 
-        {users.length === 0 ? (
+        {loading && (
+          <div style={{ textAlign: "center", padding: "40px" }}>
+            <Loading />
+          </div>
+        )}
+        {!loading && (users.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px" }}>
             <Text type="secondary">
               {searchQuery ? "No team members found matching your search." : "No team members found."}
@@ -225,7 +234,7 @@ function ManageUsers() {
               </Col>
             ))}
           </Row>
-        )}
+        ))}
       </Space>
     </DashboardLayout>
   );
