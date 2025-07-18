@@ -1,11 +1,11 @@
-# 🚀 Task Manager
+# 🚀 TaskFlow
 
 <p align="center">
-  <img src="https://res.cloudinary.com/damlr67d9/image/upload/v1751454105/taskmanager-logo_hfm2lq.svg" alt="Task Manager Logo" width="120" />
+  <img src="https://res.cloudinary.com/damlr67d9/image/upload/v1751454105/taskmanager-logo_hfm2lq.svg" alt="TaskFlow Logo" width="120" />
 </p>
 
 <p align="center">
-  <b>Modern, full-stack Task Manager for teams & individuals</b><br>
+  <b>Modern, full-stack TaskFlow for teams & individuals</b><br>
   <i>Role-based dashboards, real-time progress, file uploads, analytics, and more.</i>
 </p>
 
@@ -35,7 +35,7 @@
 
 <p align="center">
   <a href="https://drive.google.com/file/d/12bhg3GLBJ-DRK9DlqcjNAAm1SoG29ksP/view?usp=sharing" target="_blank">
-    <img src="https://res.cloudinary.com/damlr67d9/image/upload/v1751469148/admin-dashboard-dark_ssj0ag.png" alt="Task Manager Demo Video" width="480" />
+    <img src="https://res.cloudinary.com/damlr67d9/image/upload/v1751469148/admin-dashboard-dark_ssj0ag.png" alt="TaskFlow Demo Video" width="480" />
     <br>
     <i>Watch Demo Video</i>
   </a>
@@ -61,7 +61,7 @@
 ## 🗂️ Project Structure
 
 ```
-Task-manager/
+TaskFlow/
 ├── backend/           # Node.js/Express REST API
 │   ├── config/        # Database & cloudinary config
 │   ├── controllers/   # Route logic for auth, tasks, users, reports
@@ -155,93 +155,8 @@ Task-manager/
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/goutam-dev/Task-manager.git
-cd Task-manager
+git clone https://github.com/goutam-dev/TaskFlow.git
+cd TaskFlow
 cd backend && npm install
 cd ../frontend && npm install
 ```
-
-### 2. Environment Setup
-
-- **Backend**: Create `backend/.env` with:
-  ```env
-  MONGO_URI=your_mongodb_uri
-  JWT_SECRET=your_jwt_secret
-  CLOUDINARY_CLOUD_NAME=your_cloud_name
-  CLOUDINARY_API_KEY=your_api_key
-  CLOUDINARY_API_SECRET=your_api_secret
-  ADMIN_INVITE_TOKEN=your_admin_token
-  ```
-- **Frontend**: Create `frontend/.env` (optional for API URL):
-  ```env
-  VITE_API_BASE_URL=http://localhost:5000
-  ```
-
-### 3. Run the App
-
-- **Backend**:
-  ```bash
-  cd backend
-  npm run dev   # or npm start
-  ```
-- **Frontend**:
-  ```bash
-  cd frontend
-  npm run dev
-  ```
-- Visit: [http://localhost:5173](http://localhost:5173)
-
----
-
-## 🛠️ API Endpoints (Backend)
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-### Auth
-
-- `POST   /api/auth/register` — Register user/admin
-- `POST   /api/auth/login` — Login
-- `GET    /api/auth/profile` — Get profile (auth)
-
-- `POST   /api/auth/upload-image` — Upload profile image
-
-### Tasks
-
-- `GET    /api/tasks/` — List tasks (admin: all, user: assigned)
-- `POST   /api/tasks/` — Create task (admin)
-- `GET    /api/tasks/:id` — Get task by ID
-- `PUT    /api/tasks/:id` — Update task
-- `DELETE /api/tasks/:id` — Delete task (admin)
-- `PUT    /api/tasks/:id/status` — Update status
-- `PUT    /api/tasks/:id/todo` — Update checklist
-- `GET    /api/tasks/dashboard-data` — Admin dashboard stats
-- `GET    /api/tasks/user-dashboard-data` — User dashboard stats
-
-### Users
-
-- `GET    /api/users/` — List users (admin)
-- `GET    /api/users/:id` — Get user
-- `GET    /api/users/details/:id` — User details + tasks (admin)
-
-### Reports
-
-- `GET    /api/reports/export/tasks` — Export all tasks (Excel)
-- `GET    /api/reports/export/users` — Export user-task report (Excel)
-
-</details>
-
----
-
-## 👨‍💻 Authors
-
-<div align="center">
-  <a href="https://github.com/goutam-dev" target="_blank">
-    <img src="https://img.shields.io/badge/Author-Goutam-blue?style=for-the-badge" alt="Goutam" />
-  </a>
-  <a href="https://github.com/huzaifa-cell" target="_blank">
-    <img src="https://img.shields.io/badge/Author-Huzaifa-green?style=for-the-badge" alt="Huzaifa" />
-  </a>
-</div>
-
----
