@@ -100,6 +100,18 @@ function ManageUsers() {
     setSelectedUser(null);
   };
 
+  const handleUserDeleted = () => {
+    setShowDetailView(false);
+    setSelectedUser(null);
+    getUsers(searchQuery);
+  };
+
+  const handleUserUpdated = () => {
+    setShowDetailView(false);
+    setSelectedUser(null);
+    getUsers(searchQuery);
+  };
+
   // Remove: if (loading) return <Loading />;
 
   // Show detailed view if a user is selected
@@ -108,6 +120,9 @@ function ManageUsers() {
       <UserDetailView 
         user={selectedUser} 
         onBack={handleBackToList}
+        onUserDeleted={handleUserDeleted}
+        onUserUpdated={handleUserUpdated}
+        showEdit={false}
       />
     );
   }
