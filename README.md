@@ -53,6 +53,8 @@
 - **Data Visualization**: Charts for task distribution & priorities
 - **Modern UI**: Ant Design, dark/light mode, avatars, progress bars
 - **Export**: Download tasks/users as Excel
+- **Admin User Management**: Admins can update or delete user profiles
+- **User Profile Page**: All users can view and edit their profile
 
 ---
 
@@ -66,7 +68,6 @@ Task-manager/
 │   ├── middlewears/   # Auth & file upload middleware
 │   ├── models/        # Mongoose schemas (User, Task)
 │   ├── routes/        # API route definitions
-│   ├── uploads/       # Uploaded files (gitignored)
 │   └── index.js       # App entry point
 │
 ├── frontend/          # React + Vite client
@@ -95,7 +96,7 @@ Task-manager/
   - `cloudinary.js`: Configures Cloudinary for file uploads
 - **controllers/:**
   - `authControllers.js`: Handles registration, login, profile, password hashing, JWT
-  - `userControllers.js`: Admin user management, user details, task counts
+  - `userControllers.js`: Admin user management, user details, task counts, admin user update/delete
   - `taskControllers.js`: Task CRUD, assignment, filtering, sorting, progress, checklist
   - `reportControllers.js`: Exports tasks/users to Excel
 - **middlewears/:**
@@ -106,7 +107,7 @@ Task-manager/
   - `Task.js`: Task schema (title, description, priority, status, due date, assigned users, attachments, checklist, progress, timestamps)
 - **routes/:**
   - `authRoutes.js`: Register, login, profile, image upload
-  - `userRoutes.js`: Admin user management, user details
+  - `userRoutes.js`: Admin user management, user details, admin user update/delete
   - `taskRoutes.js`: Task CRUD, assignment, dashboard data
   - `reportRoutes.js`: Export tasks/users to Excel
 
@@ -119,7 +120,10 @@ Task-manager/
   - `Dashboard.jsx`: Admin dashboard (stats, charts, recent tasks)
   - `CreateTask.jsx`: Create or update tasks
   - `ManageTask.jsx`: List, search, filter, download tasks
-  - `ManageUsers.jsx`: List/search users, view user details
+  - `ManageUsers.jsx`: List/search users, view user details, admin can update/delete users
+  - `UserManagement.jsx`: Advanced user management for admins
+  - `ProfilePage.jsx`: User profile view/edit page
+  - `UserProfileEditForm.jsx`: Form for editing user profile (admin & user)
 - **User/:**
   - `UserDashboard.jsx`: User dashboard (stats, charts, recent tasks)
   - `MyTasks.jsx`: List assigned tasks
@@ -131,7 +135,7 @@ Task-manager/
   - `AdminSummary.jsx`, `TaskCharts.jsx`, `RecentTasksSection.jsx`: Dashboard widgets
   - `GenericTaskList.jsx`: Task list with search, filter, sort, progress
   - `TaskForm.jsx`: Create/update task form
-  - `UserDetailView.jsx`: User details, assigned tasks
+  - `UserDetailView.jsx`: User details, assigned tasks, admin update/delete actions
   - `UserSelectionModal.jsx`: Assign users to tasks
   - `Loading.jsx`, `Forbidden.jsx`, `NotFoundPage.jsx`: UX helpers
 - **context/:**
@@ -142,7 +146,7 @@ Task-manager/
 - **utils/:**
   - `apiPaths.js`: API endpoint paths
   - `axiosConfig.js`: Axios instance with auth
-  - `data.jsx`: Sidebar menu data, constants
+  - `data.jsx`: Sidebar menu data, constants (now includes profile/user management links)
 
 ---
 
