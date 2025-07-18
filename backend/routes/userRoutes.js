@@ -4,7 +4,8 @@ const {
   getUsers,
   getUserById,
   deleteUser,
-  getUserDetails
+  getUserDetails,
+  updateUserByAdmin
 } = require("../controllers/userControllers"); // Added controller imports
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.delete("/:id", protect, adminOnly, deleteUser); // Delete user (Admin onl
 // @desc    Get detailed user information with tasks (Admin only)
 // @access  Private (Admin)
 router.get("/details/:id", protect, adminOnly, getUserDetails);
+router.put("/:id", protect, adminOnly, updateUserByAdmin); // Admin update user profile
 
 module.exports = router;

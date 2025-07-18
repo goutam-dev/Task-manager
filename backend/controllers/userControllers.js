@@ -202,9 +202,45 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// @desc    Update a user profile (Admin only)
+// @route   PUT /api/users/:id
+// @access  Private (Admin)
+const updateUserByAdmin = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { name, email, password, profileImageUrl, role } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (profileImageUrl) user.profileImageUrl = profileImageUrl;
+    if (role) user.role = role;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+    const updatedUser = await user.save();
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      profileImageUrl: updatedUser.profileImageUrl,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
   getUserDetails, // Add the new function to exports
   deleteUser,
+  updateUserByAdmin, // Export the new controller
 };
