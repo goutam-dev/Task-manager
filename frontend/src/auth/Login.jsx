@@ -100,7 +100,7 @@ export default function Login() {
 
           <Title style={styles.title}>Sign in</Title>
           <Text style={styles.text}>
-            Welcome back to Task Manager! Please enter your details below to
+            Welcome back to TaskFlow! Please enter your details below to
             sign in.
           </Text>
         </div>
