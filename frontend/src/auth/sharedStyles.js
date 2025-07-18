@@ -22,7 +22,7 @@ export const sharedStyles = (token, screens) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center", // optional: center vertically
-    minHeight: screens.sm ? "100vh" : "auto",
+    minHeight: "100vh", // Always cover full viewport
     overflowY: "auto",
   },
   text: {

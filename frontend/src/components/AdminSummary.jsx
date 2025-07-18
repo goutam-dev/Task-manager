@@ -80,7 +80,7 @@ export default function AdminSummary({ dashboardData }) {
               color: isDarkMode ? "#fff" : undefined,
             }}
           >
-            Good Morning! {name}
+            Welcome! {name}
           </Title>
           <Text
             type="secondary"

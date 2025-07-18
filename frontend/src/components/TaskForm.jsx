@@ -129,7 +129,7 @@ const TaskForm = () => {
         setAttachments(taskInfo?.attachments || []);
         setChecklist(taskInfo?.todoChecklist?.map((item) => item?.text) || []);
         setPrevChecklist(
-          taskInfo?.todoChecklist?.map((item) => item?.text) || []
+          taskInfo?.todoChecklist?.map((item) => ({ text: item.text, completed: item.completed })) || []
         );
       } else {
         console.log("Task not found");
@@ -146,7 +146,7 @@ const TaskForm = () => {
     try {
       const todolist = checklist?.map((item) => {
         const prevTodoChecklist = prevChecklist || [];
-        const matchedTask = prevTodoChecklist.find((task) => task.text == item);
+        const matchedTask = prevTodoChecklist.find((task) => task.text === item);
 
         return {
           text: item,

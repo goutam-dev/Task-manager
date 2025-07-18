@@ -36,7 +36,7 @@ export default function DashboardLayout({
     const item = menuItems.find((i) => i.key === key);
     if (item) {
       if (item.isLogout) {
-        localStorage.clear();
+        localStorage.removeItem('token');
         clearUser();
         navigate("/login");
       } else {
