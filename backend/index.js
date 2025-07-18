@@ -13,15 +13,12 @@ const fs = require('fs');
 const app= express();
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
-}
+
 
 app.use(cors({
     origin: process.env.CLIENT_URL || "*",
     methods: ['GET',"POST","PUT","PUT","DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
 }))
 
 app.use(express.json())
@@ -32,8 +29,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/users',userRoutes)
 app.use('/api/tasks',taskRoutes)
 app.use('/api/reports',reportRoutes)
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,()=>{console.log("Server started ");
