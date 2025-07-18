@@ -20,6 +20,8 @@ import Login from "./auth/Login";
 import TaskDetails from "./User/TaskDetails";
 import NotFoundPage from "./components/NotFoundPage";
 import ThemeProvider from "./context/ThemeProvider";
+import ProfilePage from "./components/ProfilePage";
+import UserManagement from "./Admin/UserManagement";
 
 function App() {
   return (
@@ -35,12 +37,17 @@ function App() {
               <Route path="/admin/create-task" element={<CreateTask />} />
               <Route path="/admin/tasks" element={<ManageTask />} />
               <Route path="/admin/team-members" element={<ManageUsers />} />
+              <Route path="/admin/user-management" element={<UserManagement />} />
             </Route>
 
             <Route element={<PrivateRoute allowedRoles={["member"]} />}>
               <Route path="/user/dashboard" element={<UserDashboard />} />
               <Route path="/user/tasks" element={<MyTasks />} />
               <Route path="/user/task-details/:id" element={<TaskDetails />} />
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={["admin", "member"]} />}>
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
 
             <Route path="/" element={<Root />} />

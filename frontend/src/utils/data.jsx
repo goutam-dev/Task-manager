@@ -6,6 +6,8 @@ import {
   PlusSquareOutlined,
   TeamOutlined,
   UnorderedListOutlined,
+  UserOutlined,
+  SolutionOutlined, // Switched to SolutionOutlined for User Management
 } from "@ant-design/icons";
 
 export const SIDEBAR_ADMIN_ITEMS = [
@@ -34,6 +36,18 @@ export const SIDEBAR_ADMIN_ITEMS = [
     path: "/admin/team-members",
   },
   {
+    key: "profile",
+    label: "Profile",
+    icon: <UserOutlined />,
+    path: "/profile",
+  },
+  {
+    key: "user-management",
+    label: "User Management",
+    icon: <SolutionOutlined />,
+    path: "/admin/user-management",
+  },
+  {
     key: "logout",
     label: "Logout",
     icon: <LogoutOutlined />,
@@ -54,6 +68,12 @@ export const SIDEBAR_USER_ITEMS = [
     label: "My Tasks",
     icon: <CheckSquareOutlined />,
     path: "/user/tasks",
+  },
+  {
+    key: "profile",
+    label: "Profile",
+    icon: <UserOutlined />,
+    path: "/profile",
   },
   {
     key: "logout",
