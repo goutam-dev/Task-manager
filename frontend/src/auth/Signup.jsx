@@ -212,6 +212,7 @@ export default function SignUp() {
             <Upload
               name="files"
               listType="picture-card"
+              showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
               beforeUpload={(file) => {
                 const isImg = file.type.startsWith("image/");
                 if (!isImg) {
